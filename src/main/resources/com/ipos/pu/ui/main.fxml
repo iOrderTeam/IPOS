@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Button?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.ipos.pu.ui.controller.MainController"
+            style="-fx-background-color: #f4f4f4;">
+    <center>
+        <VBox alignment="CENTER" spacing="20" style="-fx-padding: 40;">
+            <Label text="IPOS-PU" style="-fx-font-size: 32px; -fx-font-weight: bold;"/>
+            <Label text="Pharmaceutical Online Portal" style="-fx-font-size: 14px; -fx-text-fill: #666;"/>
+            <Button text="Login" onAction="#onLoginClicked"
+                    style="-fx-pref-width: 200; -fx-pref-height: 40; -fx-font-size: 14px;"/>
+            <Button text="Register" onAction="#onRegisterClicked"
+                    style="-fx-pref-width: 200; -fx-pref-height: 40; -fx-font-size: 14px;"/>
+        </VBox>
+    </center>
+</BorderPane>

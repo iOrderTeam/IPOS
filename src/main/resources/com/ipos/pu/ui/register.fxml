@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Button?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.ipos.pu.ui.controller.RegisterController"
+            style="-fx-background-color: #f4f4f4;">
+    <center>
+        <VBox alignment="CENTER" spacing="20" style="-fx-padding: 40;">
+            <Label text="Register" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+            <Label text="Choose your membership type:" style="-fx-font-size: 14px;"/>
+            <Button text="Non-Commercial (Individual)" onAction="#onNonCommercialClicked"
+                    style="-fx-pref-width: 300; -fx-pref-height: 40; -fx-font-size: 14px;"/>
+            <Button text="Commercial (Business)" onAction="#onCommercialClicked"
+                    style="-fx-pref-width: 300; -fx-pref-height: 40; -fx-font-size: 14px;"/>
+            <Button text="Back" onAction="#onBackClicked"
+                    style="-fx-pref-width: 300; -fx-font-size: 12px;"/>
+        </VBox>
+    </center>
+</BorderPane>
