@@ -13,9 +13,21 @@
         <VBox alignment="CENTER" spacing="20" style="-fx-padding: 40;">
             <Label text="IPOS-PU" style="-fx-font-size: 32px; -fx-font-weight: bold;"/>
             <Label text="Pharmaceutical Online Portal" style="-fx-font-size: 14px; -fx-text-fill: #666;"/>
-            <Button text="Login" onAction="#onLoginClicked"
+
+            <!-- Guest buttons -->
+            <Button fx:id="loginButton" text="Login" onAction="#onLoginClicked"
                     style="-fx-pref-width: 200; -fx-pref-height: 40; -fx-font-size: 14px;"/>
-            <Button text="Register" onAction="#onRegisterClicked"
+            <Button fx:id="registerButton" text="Register" onAction="#onRegisterClicked"
+                    style="-fx-pref-width: 200; -fx-pref-height: 40; -fx-font-size: 14px;"/>
+
+            <!-- Logged-in buttons -->
+            <Button fx:id="catalogueButton" text="View Catalogue" onAction="#onCatalogueClicked"
+                    style="-fx-pref-width: 200; -fx-pref-height: 40; -fx-font-size: 14px;"/>
+            <Button fx:id="cartButton" text="My Cart" onAction="#onCartClicked"
+                    style="-fx-pref-width: 200; -fx-pref-height: 40; -fx-font-size: 14px;"/>
+            <Button fx:id="ordersButton" text="Track My Orders" onAction="#onOrdersClicked"
+                    style="-fx-pref-width: 200; -fx-pref-height: 40; -fx-font-size: 14px;"/>
+            <Button fx:id="logoutButton" text="Logout" onAction="#onLogoutClicked"
                     style="-fx-pref-width: 200; -fx-pref-height: 40; -fx-font-size: 14px;"/>
         </VBox>
     </center>
