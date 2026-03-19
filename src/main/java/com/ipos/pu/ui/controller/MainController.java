@@ -12,7 +12,6 @@ public class MainController {
     @FXML private Button loginButton;
     @FXML private Button registerButton;
     @FXML private Button catalogueButton;
-    @FXML private Button cartButton;
     @FXML private Button ordersButton;
     @FXML private Button logoutButton;
 
@@ -22,7 +21,6 @@ public class MainController {
         loginButton.setVisible(!loggedIn);
         registerButton.setVisible(!loggedIn);
         catalogueButton.setVisible(loggedIn);
-        cartButton.setVisible(loggedIn);
         ordersButton.setVisible(loggedIn);
         logoutButton.setVisible(loggedIn);
     }
@@ -40,11 +38,6 @@ public class MainController {
     @FXML
     private void onCatalogueClicked() {
         SceneManager.switchTo("/com/ipos/pu/ui/catalogue.fxml");
-    }
-
-    @FXML
-    private void onCartClicked() {
-        SceneManager.switchTo("/com/ipos/pu/ui/cart.fxml");
     }
 
     @FXML

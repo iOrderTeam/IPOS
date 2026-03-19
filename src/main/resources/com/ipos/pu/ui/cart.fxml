@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.ipos.pu.ui.controller.CartController"
+            style="-fx-background-color: #f4f4f4;">
+    <top>
+        <Label text="My Cart" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-padding: 20;"/>
+    </top>
+    <center>
+        <VBox spacing="10" style="-fx-padding: 20;">
+            <TableView fx:id="cartTable" prefHeight="350">
+                <columns>
+                    <TableColumn fx:id="colProduct" text="Product" prefWidth="200"/>
+                    <TableColumn fx:id="colQty" text="Qty" prefWidth="80"/>
+                    <TableColumn fx:id="colUnitPrice" text="Unit Price" prefWidth="100"/>
+                    <TableColumn fx:id="colLineTotal" text="Total" prefWidth="100"/>
+                </columns>
+            </TableView>
+            <Label fx:id="totalLabel" text="Total: £0.00"
+                   style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+            <HBox spacing="10">
+                <Button text="Place Order" onAction="#onPlaceOrderClicked"
+                        style="-fx-pref-width: 150; -fx-pref-height: 35;"/>
+                <Button text="Back" onAction="#onBackClicked"
+                        style="-fx-pref-width: 100; -fx-pref-height: 35;"/>
+            </HBox>
+        </VBox>
+    </center>
+</BorderPane>

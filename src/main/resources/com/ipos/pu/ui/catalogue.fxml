@@ -24,6 +24,9 @@
                         style="-fx-pref-width: 150; -fx-pref-height: 35;"/>
                 <Button text="Back" onAction="#onBackClicked"
                         style="-fx-pref-width: 100; -fx-pref-height: 35;"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button text="My Cart" onAction="#onCartClicked"
+                        style="-fx-pref-width: 120; -fx-pref-height: 35;"/>
             </HBox>
             <Label fx:id="messageLabel" style="-fx-text-fill: green;"/>
         </VBox>

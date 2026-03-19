@@ -1,8 +1,10 @@
 package com.ipos.pu.ui.controller;
 
 import com.ipos.pu.model.Product;
+import com.ipos.pu.service.CartService;
 import com.ipos.pu.service.CatalogueService;
 import com.ipos.pu.ui.SceneManager;
+import com.ipos.pu.ui.SessionManager;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Component;
 public class CatalogueController {
 
     private final CatalogueService catalogueService;
+    private final CartService cartService;
 
     @FXML private TableView<Product> productsTable;
     @FXML private TableColumn<Product, String> colName;
@@ -21,8 +24,9 @@ public class CatalogueController {
     @FXML private TableColumn<Product, String> colStock;
     @FXML private Label messageLabel;
 
-    public CatalogueController(CatalogueService catalogueService) {
+    public CatalogueController(CatalogueService catalogueService, CartService cartService) {
         this.catalogueService = catalogueService;
+        this.cartService = cartService;
     }
 
     @FXML
@@ -42,9 +46,15 @@ public class CatalogueController {
             messageLabel.setStyle("-fx-text-fill: red;");
             return;
         }
-        // CartService will be wired in once built (22 March milestone)
-        messageLabel.setText(selected.getName() + " selected — cart coming soon.");
+        Long memberId = SessionManager.getCurrentMember().getId();
+        cartService.addToCart(memberId, selected.getId(), 1);
+        messageLabel.setText(selected.getName() + " added to cart.");
         messageLabel.setStyle("-fx-text-fill: green;");
+    }
+
+    @FXML
+    private void onCartClicked() {
+        SceneManager.switchTo("/com/ipos/pu/ui/cart.fxml");
     }
 
     @FXML

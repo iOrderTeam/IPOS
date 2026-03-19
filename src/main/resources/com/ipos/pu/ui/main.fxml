@@ -23,8 +23,6 @@
             <!-- Logged-in buttons -->
             <Button fx:id="catalogueButton" text="View Catalogue" onAction="#onCatalogueClicked"
                     style="-fx-pref-width: 200; -fx-pref-height: 40; -fx-font-size: 14px;"/>
-            <Button fx:id="cartButton" text="My Cart" onAction="#onCartClicked"
-                    style="-fx-pref-width: 200; -fx-pref-height: 40; -fx-font-size: 14px;"/>
             <Button fx:id="ordersButton" text="Track My Orders" onAction="#onOrdersClicked"
                     style="-fx-pref-width: 200; -fx-pref-height: 40; -fx-font-size: 14px;"/>
             <Button fx:id="logoutButton" text="Logout" onAction="#onLogoutClicked"
