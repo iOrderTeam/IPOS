@@ -9,6 +9,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.control.TextField;
 import org.springframework.stereotype.Component;
 
 @Component("catalogueUiController")
@@ -17,6 +18,7 @@ public class CatalogueController {
     private final CatalogueService catalogueService;
     private final CartService cartService;
 
+    @FXML private TextField searchField;
     @FXML private TableView<Product> productsTable;
     @FXML private TableColumn<Product, String> colName;
     @FXML private TableColumn<Product, String> colBrand;
@@ -36,6 +38,20 @@ public class CatalogueController {
         colPrice.setCellValueFactory(d -> new SimpleStringProperty("£" + d.getValue().getPrice()));
         colStock.setCellValueFactory(d -> new SimpleStringProperty(String.valueOf(d.getValue().getStockQuantity())));
         productsTable.setItems(FXCollections.observableArrayList(catalogueService.getAllProducts()));
+    }
+
+    @FXML
+    private void onSearchClicked() {
+        productsTable.setItems(FXCollections.observableArrayList(
+                catalogueService.searchByName(searchField.getText())));
+        messageLabel.setText("");
+    }
+
+    @FXML
+    private void onClearClicked() {
+        searchField.clear();
+        productsTable.setItems(FXCollections.observableArrayList(catalogueService.getAllProducts()));
+        messageLabel.setText("");
     }
 
     @FXML

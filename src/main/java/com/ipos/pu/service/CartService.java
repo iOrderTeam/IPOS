@@ -56,4 +56,11 @@ public class CartService {
                 .mapToDouble(item -> item.getQuantity() * item.getProduct().getPrice())
                 .sum();
     }
+
+    public boolean isNextOrderLoyalty(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("Member not found."));
+        return member.getMemberType() == com.ipos.pu.model.MemberType.NON_COMMERCIAL
+                && (member.getOrderCounter() + 1) % 10 == 0;
+    }
 }

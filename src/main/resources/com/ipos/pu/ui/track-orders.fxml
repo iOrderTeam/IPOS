@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.ipos.pu.ui.controller.TrackOrdersController"
+            style="-fx-background-color: #f4f4f4;">
+    <top>
+        <Label text="My Orders" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-padding: 20;"/>
+    </top>
+    <center>
+        <VBox spacing="10" style="-fx-padding: 20;">
+            <TableView fx:id="ordersTable" prefHeight="400">
+                <columns>
+                    <TableColumn fx:id="colId" text="Order ID" prefWidth="80"/>
+                    <TableColumn fx:id="colDate" text="Date" prefWidth="150"/>
+                    <TableColumn fx:id="colTotal" text="Total" prefWidth="100"/>
+                    <TableColumn fx:id="colStatus" text="Status" prefWidth="120"/>
+                    <TableColumn fx:id="colRef" text="Payment Ref" prefWidth="150"/>
+                </columns>
+            </TableView>
+            <Button text="Back to Dashboard" onAction="#onBackClicked"
+                    style="-fx-pref-width: 200; -fx-pref-height: 35;"/>
+        </VBox>
+    </center>
+</BorderPane>

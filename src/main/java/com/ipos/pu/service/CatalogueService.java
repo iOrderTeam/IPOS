@@ -19,6 +19,13 @@ public class CatalogueService {
         return productRepository.findAll();
     }
 
+    public List<Product> searchByName(String keyword) {
+        if (keyword == null || keyword.isBlank()) {
+            return productRepository.findAll();
+        }
+        return productRepository.findByNameContainingIgnoreCase(keyword.trim());
+    }
+
     public Optional<Product> getProductById(Long id) {
         return productRepository.findById(id);
     }
