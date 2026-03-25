@@ -40,7 +40,7 @@ public class ChangePasswordController {
 
         try {
             memberService.changePassword(SessionManager.getCurrentMember().getId(), current, newPass);
-            SceneManager.switchTo("/com/ipos/pu/ui/main.fxml");
+            SceneManager.switchTo("/com/ipos/pu/ui/catalogue.fxml");
         } catch (Exception e) {
             errorLabel.setText(e.getMessage());
         }

@@ -1,27 +1,74 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<BorderPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.ipos.pu.ui.controller.TrackOrdersController"
-            style="-fx-background-color: #f4f4f4;">
-    <top>
-        <Label text="My Orders" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-padding: 20;"/>
-    </top>
-    <center>
-        <VBox spacing="10" style="-fx-padding: 20;">
-            <TableView fx:id="ordersTable" prefHeight="400">
-                <columns>
-                    <TableColumn fx:id="colId" text="Order ID" prefWidth="80"/>
-                    <TableColumn fx:id="colDate" text="Date" prefWidth="150"/>
-                    <TableColumn fx:id="colTotal" text="Total" prefWidth="100"/>
-                    <TableColumn fx:id="colStatus" text="Status" prefWidth="120"/>
-                    <TableColumn fx:id="colRef" text="Payment Ref" prefWidth="150"/>
-                </columns>
-            </TableView>
-            <Button text="Back to Dashboard" onAction="#onBackClicked"
-                    style="-fx-pref-width: 200; -fx-pref-height: 35;"/>
+<HBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.ipos.pu.ui.controller.TrackOrdersController"
+      style="-fx-background-color: #f0f2f5;">
+
+    <!-- Sidebar -->
+    <VBox prefWidth="200" spacing="4"
+          style="-fx-background-color: #1e1e2e; -fx-padding: 0;">
+
+        <VBox alignment="CENTER" style="-fx-padding: 24 16 20 16; -fx-border-color: transparent transparent #2e2e42 transparent; -fx-border-width: 1;">
+            <ImageView fitWidth="100" fitHeight="100" preserveRatio="true">
+                <image><Image url="/com/ipos/pu/ui/icon.png"/></image>
+            </ImageView>
         </VBox>
-    </center>
-</BorderPane>
+
+        <VBox spacing="4" style="-fx-padding: 16 12 0 12;" VBox.vgrow="ALWAYS">
+            <Button text="Catalogue" onAction="#onCatalogueClicked" maxWidth="Infinity"
+                    style="-fx-background-color: transparent; -fx-text-fill: #a0a0b8; -fx-font-size: 13px; -fx-alignment: CENTER_LEFT; -fx-padding: 10 14; -fx-cursor: hand; -fx-background-radius: 8; -fx-graphic-text-gap: 10;">
+                <graphic><FontIcon iconLiteral="fth-grid" iconSize="15" iconColor="#a0a0b8"/></graphic>
+            </Button>
+            <Button fx:id="cartNavButton" text="My Cart" onAction="#onCartClicked" maxWidth="Infinity"
+                    style="-fx-background-color: transparent; -fx-text-fill: #a0a0b8; -fx-font-size: 13px; -fx-alignment: CENTER_LEFT; -fx-padding: 10 14; -fx-cursor: hand; -fx-background-radius: 8; -fx-graphic-text-gap: 10;">
+                <graphic><FontIcon iconLiteral="fth-shopping-cart" iconSize="15" iconColor="#a0a0b8"/></graphic>
+            </Button>
+            <Button text="My Orders" maxWidth="Infinity"
+                    style="-fx-background-color: #2e2e52; -fx-text-fill: #ffffff; -fx-font-size: 13px; -fx-font-weight: bold; -fx-alignment: CENTER_LEFT; -fx-padding: 10 14; -fx-background-radius: 8; -fx-graphic-text-gap: 10;">
+                <graphic><FontIcon iconLiteral="fth-package" iconSize="15" iconColor="#ffffff"/></graphic>
+            </Button>
+        </VBox>
+
+        <VBox style="-fx-padding: 0 12 20 12;">
+            <Button text="Logout" onAction="#onLogoutClicked" maxWidth="Infinity"
+                    style="-fx-background-color: transparent; -fx-text-fill: #a0a0b8; -fx-font-size: 13px; -fx-alignment: CENTER_LEFT; -fx-padding: 10 14; -fx-cursor: hand; -fx-background-radius: 8; -fx-graphic-text-gap: 10;">
+                <graphic><FontIcon iconLiteral="fth-log-out" iconSize="15" iconColor="#a0a0b8"/></graphic>
+            </Button>
+        </VBox>
+    </VBox>
+
+    <!-- Main content -->
+    <VBox HBox.hgrow="ALWAYS" style="-fx-background-color: #f0f2f5;">
+
+        <!-- Header -->
+        <HBox alignment="CENTER_LEFT" spacing="12"
+              style="-fx-background-color: #ffffff; -fx-padding: 16 24; -fx-border-color: transparent transparent #e0e0e8 transparent; -fx-border-width: 1;">
+            <Label text="My Orders" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #1e1e2e;"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <FontIcon iconLiteral="fth-user" iconSize="14" iconColor="#666"/>
+            <Label fx:id="welcomeLabel" style="-fx-font-size: 13px; -fx-text-fill: #666;"/>
+        </HBox>
+
+        <!-- Content -->
+        <VBox spacing="12" style="-fx-padding: 24;" VBox.vgrow="ALWAYS">
+            <VBox spacing="0"
+                  style="-fx-background-color: #ffffff; -fx-padding: 16; -fx-background-radius: 10; -fx-border-color: #e0e0e8; -fx-border-radius: 10; -fx-border-width: 1;"
+                  VBox.vgrow="ALWAYS">
+                <TableView fx:id="ordersTable" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="colId" text="Order ID" prefWidth="80"/>
+                        <TableColumn fx:id="colDate" text="Date" prefWidth="150"/>
+                        <TableColumn fx:id="colTotal" text="Total" prefWidth="100"/>
+                        <TableColumn fx:id="colStatus" text="Status" prefWidth="130"/>
+                        <TableColumn fx:id="colRef" text="Payment Ref" prefWidth="160"/>
+                    </columns>
+                </TableView>
+            </VBox>
+        </VBox>
+    </VBox>
+</HBox>

@@ -14,8 +14,6 @@ import com.ipos.pu.ui.SceneManager;
 public class IposPuApplication extends Application {
 
     private ConfigurableApplicationContext springContext;
-    private Parent rootNode;
-    private Stage stage;
 
     @Override
     public void init() throws Exception {
@@ -24,15 +22,17 @@ public class IposPuApplication extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        this.stage = stage;
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/ipos/pu/ui/main.fxml"));
-        loader.setControllerFactory(springContext::getBean);
-        rootNode = loader.load();
-        Scene scene = new Scene(rootNode, 800, 600);
-        stage.setScene(scene);
         stage.setTitle("IPOS-PU");
-        javafx.scene.image.Image icon = new javafx.scene.image.Image(getClass().getResourceAsStream("/com/ipos/pu/ui/icon.png"));
+        javafx.scene.image.Image icon = new javafx.scene.image.Image(
+                getClass().getResourceAsStream("/com/ipos/pu/ui/icon.png"));
         stage.getIcons().add(icon);
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/ipos/pu/ui/login.fxml"));
+        loader.setControllerFactory(springContext::getBean);
+        Parent root = loader.load();
+        Scene scene = new Scene(root, 800, 600);
+        stage.setScene(scene);
+
         SceneManager.init(stage, springContext);
         stage.show();
     }

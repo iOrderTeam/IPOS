@@ -1,26 +1,85 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<BorderPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.ipos.pu.ui.controller.CheckoutController"
-            style="-fx-background-color: #f4f4f4;">
-    <center>
-        <VBox alignment="CENTER" spacing="15" style="-fx-padding: 40;">
-            <Label text="Checkout" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
-            <Label fx:id="totalLabel" text="Total: £0.00" style="-fx-font-size: 16px;"/>
-            <TextField fx:id="cardNameField" promptText="Cardholder Name" style="-fx-pref-width: 300;"/>
-            <TextField fx:id="cardNumberField" promptText="Card Number" style="-fx-pref-width: 300;"/>
-            <HBox spacing="10" alignment="CENTER">
-                <TextField fx:id="expiryField" promptText="MM/YY" style="-fx-pref-width: 145;"/>
-                <TextField fx:id="cvvField" promptText="CVV" style="-fx-pref-width: 145;"/>
-            </HBox>
-            <Label fx:id="messageLabel" style="-fx-text-fill: red;"/>
-            <Button text="Confirm &amp; Pay" onAction="#onConfirmClicked"
-                    style="-fx-pref-width: 300; -fx-pref-height: 40; -fx-font-size: 14px;"/>
-            <Button text="Back to Cart" onAction="#onBackClicked"
-                    style="-fx-pref-width: 300;"/>
+<HBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.ipos.pu.ui.controller.CheckoutController"
+      style="-fx-background-color: #f0f2f5;">
+
+    <!-- Sidebar -->
+    <VBox prefWidth="200" spacing="4"
+          style="-fx-background-color: #1e1e2e; -fx-padding: 0;">
+
+        <VBox alignment="CENTER" style="-fx-padding: 24 16 20 16; -fx-border-color: transparent transparent #2e2e42 transparent; -fx-border-width: 1;">
+            <ImageView fitWidth="100" fitHeight="100" preserveRatio="true">
+                <image><Image url="/com/ipos/pu/ui/icon.png"/></image>
+            </ImageView>
         </VBox>
-    </center>
-</BorderPane>
+
+        <VBox spacing="4" style="-fx-padding: 16 12 0 12;" VBox.vgrow="ALWAYS">
+            <Button text="Catalogue" onAction="#onCatalogueClicked" maxWidth="Infinity"
+                    style="-fx-background-color: transparent; -fx-text-fill: #a0a0b8; -fx-font-size: 13px; -fx-alignment: CENTER_LEFT; -fx-padding: 10 14; -fx-cursor: hand; -fx-background-radius: 8; -fx-graphic-text-gap: 10;">
+                <graphic><FontIcon iconLiteral="fth-grid" iconSize="15" iconColor="#a0a0b8"/></graphic>
+            </Button>
+            <Button fx:id="cartNavButton" text="My Cart" onAction="#onCartClicked" maxWidth="Infinity"
+                    style="-fx-background-color: transparent; -fx-text-fill: #a0a0b8; -fx-font-size: 13px; -fx-alignment: CENTER_LEFT; -fx-padding: 10 14; -fx-cursor: hand; -fx-background-radius: 8; -fx-graphic-text-gap: 10;">
+                <graphic><FontIcon iconLiteral="fth-shopping-cart" iconSize="15" iconColor="#a0a0b8"/></graphic>
+            </Button>
+            <Button text="My Orders" onAction="#onOrdersClicked" maxWidth="Infinity"
+                    style="-fx-background-color: transparent; -fx-text-fill: #a0a0b8; -fx-font-size: 13px; -fx-alignment: CENTER_LEFT; -fx-padding: 10 14; -fx-cursor: hand; -fx-background-radius: 8; -fx-graphic-text-gap: 10;">
+                <graphic><FontIcon iconLiteral="fth-package" iconSize="15" iconColor="#a0a0b8"/></graphic>
+            </Button>
+        </VBox>
+
+        <VBox style="-fx-padding: 0 12 20 12;">
+            <Button text="Logout" onAction="#onLogoutClicked" maxWidth="Infinity"
+                    style="-fx-background-color: transparent; -fx-text-fill: #a0a0b8; -fx-font-size: 13px; -fx-alignment: CENTER_LEFT; -fx-padding: 10 14; -fx-cursor: hand; -fx-background-radius: 8; -fx-graphic-text-gap: 10;">
+                <graphic><FontIcon iconLiteral="fth-log-out" iconSize="15" iconColor="#a0a0b8"/></graphic>
+            </Button>
+        </VBox>
+    </VBox>
+
+    <!-- Main content -->
+    <VBox HBox.hgrow="ALWAYS" style="-fx-background-color: #f0f2f5;">
+
+        <!-- Header -->
+        <HBox alignment="CENTER_LEFT" spacing="12"
+              style="-fx-background-color: #ffffff; -fx-padding: 16 24; -fx-border-color: transparent transparent #e0e0e8 transparent; -fx-border-width: 1;">
+            <Label text="Checkout" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #1e1e2e;"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <FontIcon iconLiteral="fth-user" iconSize="14" iconColor="#666"/>
+            <Label fx:id="welcomeLabel" style="-fx-font-size: 13px; -fx-text-fill: #666;"/>
+        </HBox>
+
+        <!-- Content -->
+        <VBox spacing="12" style="-fx-padding: 24;" VBox.vgrow="ALWAYS">
+            <VBox spacing="16" alignment="TOP_CENTER"
+                  style="-fx-background-color: #ffffff; -fx-padding: 32; -fx-background-radius: 10; -fx-border-color: #e0e0e8; -fx-border-radius: 10; -fx-border-width: 1; -fx-max-width: 480;"
+                  VBox.vgrow="ALWAYS">
+                <Label fx:id="totalLabel" text="Total: £0.00"
+                       style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #1e1e2e;"/>
+                <Label text="Payment Details" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #555; -fx-padding: 8 0 0 0;"/>
+                <TextField fx:id="cardNameField" promptText="Cardholder Name"
+                           style="-fx-pref-width: 400; -fx-pref-height: 36; -fx-background-color: #f5f5fa; -fx-border-color: #e0e0e8; -fx-border-radius: 6; -fx-background-radius: 6; -fx-padding: 6 10;"/>
+                <TextField fx:id="cardNumberField" promptText="Card Number"
+                           style="-fx-pref-width: 400; -fx-pref-height: 36; -fx-background-color: #f5f5fa; -fx-border-color: #e0e0e8; -fx-border-radius: 6; -fx-background-radius: 6; -fx-padding: 6 10;"/>
+                <HBox spacing="12">
+                    <TextField fx:id="expiryField" promptText="MM/YY"
+                               style="-fx-pref-width: 194; -fx-pref-height: 36; -fx-background-color: #f5f5fa; -fx-border-color: #e0e0e8; -fx-border-radius: 6; -fx-background-radius: 6; -fx-padding: 6 10;"/>
+                    <TextField fx:id="cvvField" promptText="CVV"
+                               style="-fx-pref-width: 194; -fx-pref-height: 36; -fx-background-color: #f5f5fa; -fx-border-color: #e0e0e8; -fx-border-radius: 6; -fx-background-radius: 6; -fx-padding: 6 10;"/>
+                </HBox>
+                <Label fx:id="messageLabel" style="-fx-font-size: 13px;"/>
+                <HBox spacing="12">
+                    <Button text="Back to Cart" onAction="#onBackClicked"
+                            style="-fx-pref-height: 38; -fx-pref-width: 140; -fx-background-color: #e0e0e8; -fx-text-fill: #444; -fx-background-radius: 6; -fx-cursor: hand;"/>
+                    <Button text="Confirm &amp; Pay" onAction="#onConfirmClicked"
+                            style="-fx-pref-height: 38; -fx-pref-width: 200; -fx-background-color: #1e1e2e; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 6; -fx-cursor: hand;"/>
+                </HBox>
+            </VBox>
+        </VBox>
+    </VBox>
+</HBox>

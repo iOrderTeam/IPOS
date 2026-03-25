@@ -40,7 +40,7 @@ public class LoginController {
             if (member.isPasswordChangeRequired()) {
                 SceneManager.switchTo("/com/ipos/pu/ui/change-password.fxml");
             } else {
-                SceneManager.switchTo("/com/ipos/pu/ui/main.fxml");
+                SceneManager.switchTo("/com/ipos/pu/ui/catalogue.fxml");
             }
         } catch (Exception e) {
             errorLabel.setText(e.getMessage());
@@ -49,6 +49,6 @@ public class LoginController {
 
     @FXML
     private void onBackClicked() {
-        SceneManager.switchTo("/com/ipos/pu/ui/main.fxml");
+        SceneManager.switchTo("/com/ipos/pu/ui/register.fxml");
     }
 }

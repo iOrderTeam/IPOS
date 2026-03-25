@@ -5,6 +5,7 @@ import com.ipos.pu.service.OrderService;
 import com.ipos.pu.ui.SceneManager;
 import com.ipos.pu.ui.SessionManager;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import org.springframework.stereotype.Component;
@@ -22,6 +23,8 @@ public class CheckoutController {
     @FXML private TextField expiryField;
     @FXML private TextField cvvField;
     @FXML private Label messageLabel;
+    @FXML private Label welcomeLabel;
+    @FXML private Button cartNavButton;
 
     public CheckoutController(OrderService orderService, CartService cartService) {
         this.orderService = orderService;
@@ -33,6 +36,11 @@ public class CheckoutController {
         Long memberId = SessionManager.getCurrentMember().getId();
         double total = cartService.getCartTotal(memberId);
         boolean loyalty = cartService.isNextOrderLoyalty(memberId);
+        if (SessionManager.isLoggedIn()) {
+            welcomeLabel.setText(SessionManager.getCurrentMember().getFirstName());
+            int count = cartService.getCartItemCount(memberId);
+            cartNavButton.setText("My Cart" + (count > 0 ? "  (" + count + ")" : ""));
+        }
         if (loyalty) {
             double discounted = total * 0.90;
             totalLabel.setText("Total: £" + String.format("%.2f", discounted));
@@ -59,6 +67,27 @@ public class CheckoutController {
         } catch (Exception e) {
             messageLabel.setText(e.getMessage());
         }
+    }
+
+    @FXML
+    private void onCatalogueClicked() {
+        SceneManager.switchTo("/com/ipos/pu/ui/catalogue.fxml");
+    }
+
+    @FXML
+    private void onCartClicked() {
+        SceneManager.switchTo("/com/ipos/pu/ui/cart.fxml");
+    }
+
+    @FXML
+    private void onOrdersClicked() {
+        SceneManager.switchTo("/com/ipos/pu/ui/track-orders.fxml");
+    }
+
+    @FXML
+    private void onLogoutClicked() {
+        SessionManager.clearSession();
+        SceneManager.switchTo("/com/ipos/pu/ui/login.fxml");
     }
 
     @FXML

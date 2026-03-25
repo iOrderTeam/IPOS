@@ -57,6 +57,17 @@ public class CartService {
                 .sum();
     }
 
+    @Transactional
+    public void removeFromCart(Long cartItemId) {
+        cartItemRepository.deleteById(cartItemId);
+    }
+
+    public int getCartItemCount(Long memberId) {
+        return getCart(memberId).stream()
+                .mapToInt(CartItem::getQuantity)
+                .sum();
+    }
+
     public boolean isNextOrderLoyalty(Long memberId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("Member not found."));

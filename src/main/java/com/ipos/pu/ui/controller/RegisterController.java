@@ -19,6 +19,6 @@ public class RegisterController {
 
     @FXML
     private void onBackClicked() {
-        SceneManager.switchTo("/com/ipos/pu/ui/main.fxml");
+        SceneManager.switchTo("/com/ipos/pu/ui/login.fxml");
     }
 }
