@@ -4,6 +4,7 @@ import com.ipos.pu.ui.SceneManager;
 import com.ipos.pu.ui.SessionManager;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -14,6 +15,7 @@ public class MainController {
     @FXML private Button catalogueButton;
     @FXML private Button ordersButton;
     @FXML private Button logoutButton;
+    @FXML private Label welcomeLabel;
 
     @FXML
     public void initialize() {
@@ -23,6 +25,12 @@ public class MainController {
         catalogueButton.setVisible(loggedIn);
         ordersButton.setVisible(loggedIn);
         logoutButton.setVisible(loggedIn);
+
+        if (loggedIn) {
+            welcomeLabel.setText("Welcome, " + SessionManager.getCurrentMember().getFirstName() + "!");
+        } else {
+            welcomeLabel.setText("");
+        }
     }
 
     @FXML
