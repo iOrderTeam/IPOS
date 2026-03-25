@@ -31,6 +31,8 @@ public class IposPuApplication extends Application {
         Scene scene = new Scene(rootNode, 800, 600);
         stage.setScene(scene);
         stage.setTitle("IPOS-PU");
+        javafx.scene.image.Image icon = new javafx.scene.image.Image(getClass().getResourceAsStream("/com/ipos/pu/ui/icon.png"));
+        stage.getIcons().add(icon);
         SceneManager.init(stage, springContext);
         stage.show();
     }
