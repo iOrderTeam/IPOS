@@ -12,7 +12,7 @@ public class Campaign {
 
     private String name;
     private String description;
-    private LocalDate createDate;
+    private LocalDate startDate;
     private LocalDate endDate;
     private int hits;
     private double discountPercentage;
@@ -39,10 +39,10 @@ public class Campaign {
     }
 
     public LocalDate getCreateDate() {
-        return createDate;
+        return startDate;
     }
     public void setCreateDate(LocalDate createDate) {
-        this.createDate = createDate;
+        this.startDate = createDate;
     }
 
     public LocalDate getEndDate() {
