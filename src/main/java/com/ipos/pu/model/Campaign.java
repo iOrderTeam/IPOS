@@ -38,10 +38,13 @@ public class Campaign {
         this.description = description;
     }
 
-    public LocalDate getCreateDate() {
+    public double getDiscountPercentage() { return discountPercentage; }
+    public void setDiscountPercentage(double discountPercentage) { this.discountPercentage = discountPercentage; }
+
+    public LocalDate getStartDate() {
         return startDate;
     }
-    public void setCreateDate(LocalDate createDate) {
+    public void setStartDate(LocalDate createDate) {
         this.startDate = createDate;
     }
 
