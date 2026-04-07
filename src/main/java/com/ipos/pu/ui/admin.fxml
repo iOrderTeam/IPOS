@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.ipos.pu.ui.controller.AdminController"
+            style="-fx-background-color: #f4f4f4;">
+    <top>
+        <Label text="Admin — Pending Applications"
+               style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-padding: 20;"/>
+    </top>
+    <center>
+        <VBox spacing="15" style="-fx-padding: 20;">
+            <Label text="Select an application and choose Approve or Reject:"/>
+            <ListView fx:id="pendingList" prefHeight="300"/>
+            <Label fx:id="messageLabel" style="-fx-text-fill: green;"/>
+            <HBox spacing="10">
+                <Button text="Approve Selected" onAction="#onApproveClicked"
+                        style="-fx-pref-width: 180; -fx-pref-height: 35;"/>
+                <Button text="Reject Selected" onAction="#onRejectClicked"
+                        style="-fx-pref-width: 180; -fx-pref-height: 35;"/>
+            </HBox>
+            <Button text="Back" onAction="#onBackClicked" style="-fx-pref-width: 100;"/>
+        </VBox>
+    </center>
+</BorderPane>

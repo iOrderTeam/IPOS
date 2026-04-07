@@ -1,4 +1,4 @@
-package com.ipos.pu.ui.controller;
+package com.ipos.pu.controller;
 
 import com.ipos.pu.service.EmailService;
 import org.springframework.http.ResponseEntity;

@@ -1,79 +1,73 @@
 package com.ipos.pu.ui.controller;
 
+import com.ipos.pu.model.Member;
 import com.ipos.pu.service.AdminService;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import java.time.LocalDate;
-import java.util.Map;
+import com.ipos.pu.ui.SceneManager;
+import javafx.fxml.FXML;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import org.springframework.stereotype.Component;
+import java.util.List;
 
-@RestController
-@RequestMapping("/api/admin")
+@Component
 public class AdminController {
+
     private final AdminService adminService;
+
+    @FXML private ListView<String> pendingList;
+    @FXML private Label messageLabel;
 
     public AdminController(AdminService adminService) {
         this.adminService = adminService;
     }
 
-    @GetMapping("/pending")
-    public ResponseEntity<?>  getPending() {
-        return ResponseEntity.ok(adminService.getPendingApplications());
+    @FXML
+    public void initialize() {
+        loadPending();
     }
 
-    @PostMapping("/approve/{memberId}")
-    public ResponseEntity<?>  approve(@PathVariable Long memberId, @RequestParam String temporaryPassword) {
-        try {
-            adminService.approveMember(memberId, temporaryPassword);
-            return ResponseEntity.ok("Member approved");
-        }  catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+    private void loadPending() {
+        List<Member> pending = adminService.getPendingApplications();
+        pendingList.getItems().clear();
+        for (Member m : pending) {
+            pendingList.getItems().add(
+                    m.getId() + " | " + m.getEmail() + " | " + m.getCompanyRegistrationNumber()
+            );
         }
     }
 
-    @PostMapping("/reject/{memberId}")
-    public ResponseEntity<?> reject(@PathVariable Long memberId) {
-        try {
-            adminService.rejectMember(memberId);
-            return ResponseEntity.ok("Member rejected.");
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+    @FXML
+    private void onApproveClicked() {
+        String selected = pendingList.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            messageLabel.setText("Please select an application first.");
+            messageLabel.setStyle("-fx-text-fill: red;");
+            return;
         }
+        Long memberId = Long.parseLong(selected.split(" \\| ")[0].trim());
+        adminService.approveMember(memberId, "Temp1234!");
+        messageLabel.setText("Member approved. Temporary password sent by email.");
+        messageLabel.setStyle("-fx-text-fill: green;");
+        loadPending();
     }
 
-    @PostMapping("/campaigns")
-    public ResponseEntity<?> createCampaign(@RequestBody Map<String, String> body) {
-        try {
-            return ResponseEntity.ok(adminService.createCampaign(
-                    body.get("name"),
-                    body.get("description"),
-                    Double.parseDouble(body.get("discountPercentage")),
-                    LocalDate.parse(body.get("startDate")),
-                    LocalDate.parse(body.get("endDate"))
-            ));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+    @FXML
+    private void onRejectClicked() {
+        String selected = pendingList.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            messageLabel.setText("Please select an application first.");
+            messageLabel.setStyle("-fx-text-fill: red;");
+            return;
         }
+        Long memberId = Long.parseLong(selected.split(" \\| ")[0].trim());
+        adminService.rejectMember(memberId);
+        messageLabel.setText("Member rejected.");
+        messageLabel.setStyle("-fx-text-fill: green;");
+        loadPending();
     }
 
-    @DeleteMapping("/campaigns/{id}")
-    public ResponseEntity<?> deleteCampaign(@PathVariable Long id) {
-        adminService.deleteCampaign(id);
-        return ResponseEntity.ok("Campaign deleted.");
+    @FXML
+    private void onBackClicked() {
+        SceneManager.switchTo("/com/ipos/pu/ui/main.fxml");
     }
-
-    @GetMapping("/campaigns/active")
-    public ResponseEntity<?> getActiveCampaigns() {
-        return ResponseEntity.ok(adminService.getActiveCampaigns());
-    }
-
-    @PostMapping("/campaigns/{id}/hit")
-    public ResponseEntity<?> incrementHit(@PathVariable Long id) {
-        try {
-            adminService.incrementCampaignHits(id);
-            return ResponseEntity.ok("Hit recorded.");
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
-
 }
