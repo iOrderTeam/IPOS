@@ -16,11 +16,13 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
+    private final IposSaService iposSaService;
 
-    public MemberService(MemberRepository memberRepository, PasswordEncoder passwordEncoder, EmailService emailService) {
+    public MemberService(MemberRepository memberRepository, PasswordEncoder passwordEncoder, EmailService emailService, IposSaService iposSaService) {
         this.memberRepository = memberRepository;
         this.passwordEncoder = passwordEncoder;
         this.emailService = emailService;
+        this.iposSaService = iposSaService;
     }
 
     // UC4 - Register a non-commercial member
@@ -75,7 +77,9 @@ public class MemberService {
         member.setBusinessType(businessType);
         member.setAddress(address);
 
-        return memberRepository.save(member);
+        Member saved = memberRepository.save(member);
+        iposSaService.submitCommercialApplication(saved);
+        return saved;
     }
 
     // UC6 - Login
