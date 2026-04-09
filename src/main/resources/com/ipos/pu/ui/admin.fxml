@@ -6,7 +6,7 @@
 
 <HBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.ipos.pu.ui.controller.TrackOrdersController"
+      fx:controller="com.ipos.pu.ui.controller.AdminScreenController"
       style="-fx-background-color: #f0f2f5;">
 
     <!-- Sidebar -->
@@ -24,17 +24,17 @@
                     style="-fx-background-color: transparent; -fx-text-fill: #a0a0b8; -fx-font-size: 13px; -fx-alignment: CENTER_LEFT; -fx-padding: 10 14; -fx-cursor: hand; -fx-background-radius: 8; -fx-graphic-text-gap: 10;">
                 <graphic><FontIcon iconLiteral="fth-grid" iconSize="15" iconColor="#a0a0b8"/></graphic>
             </Button>
-            <Button fx:id="cartNavButton" text="My Cart" onAction="#onCartClicked" maxWidth="Infinity"
+            <Button text="My Cart" onAction="#onCartClicked" maxWidth="Infinity"
                     style="-fx-background-color: transparent; -fx-text-fill: #a0a0b8; -fx-font-size: 13px; -fx-alignment: CENTER_LEFT; -fx-padding: 10 14; -fx-cursor: hand; -fx-background-radius: 8; -fx-graphic-text-gap: 10;">
                 <graphic><FontIcon iconLiteral="fth-shopping-cart" iconSize="15" iconColor="#a0a0b8"/></graphic>
             </Button>
-            <Button text="My Orders" maxWidth="Infinity"
-                    style="-fx-background-color: #2e2e52; -fx-text-fill: #ffffff; -fx-font-size: 13px; -fx-font-weight: bold; -fx-alignment: CENTER_LEFT; -fx-padding: 10 14; -fx-background-radius: 8; -fx-graphic-text-gap: 10;">
-                <graphic><FontIcon iconLiteral="fth-package" iconSize="15" iconColor="#ffffff"/></graphic>
-            </Button>
-            <Button text="Admin" onAction="#onAdminClicked" maxWidth="Infinity"
+            <Button text="My Orders" onAction="#onOrdersClicked" maxWidth="Infinity"
                     style="-fx-background-color: transparent; -fx-text-fill: #a0a0b8; -fx-font-size: 13px; -fx-alignment: CENTER_LEFT; -fx-padding: 10 14; -fx-cursor: hand; -fx-background-radius: 8; -fx-graphic-text-gap: 10;">
-                <graphic><FontIcon iconLiteral="fth-shield" iconSize="15" iconColor="#a0a0b8"/></graphic>
+                <graphic><FontIcon iconLiteral="fth-package" iconSize="15" iconColor="#a0a0b8"/></graphic>
+            </Button>
+            <Button text="Admin" maxWidth="Infinity"
+                    style="-fx-background-color: #2e2e52; -fx-text-fill: #ffffff; -fx-font-size: 13px; -fx-font-weight: bold; -fx-alignment: CENTER_LEFT; -fx-padding: 10 14; -fx-background-radius: 8; -fx-graphic-text-gap: 10;">
+                <graphic><FontIcon iconLiteral="fth-shield" iconSize="15" iconColor="#ffffff"/></graphic>
             </Button>
             <Button text="Campaigns" onAction="#onCampaignsClicked" maxWidth="Infinity"
                     style="-fx-background-color: transparent; -fx-text-fill: #a0a0b8; -fx-font-size: 13px; -fx-alignment: CENTER_LEFT; -fx-padding: 10 14; -fx-cursor: hand; -fx-background-radius: 8; -fx-graphic-text-gap: 10;">
@@ -56,7 +56,7 @@
         <!-- Header -->
         <HBox alignment="CENTER_LEFT" spacing="12"
               style="-fx-background-color: #ffffff; -fx-padding: 16 24; -fx-border-color: transparent transparent #e0e0e8 transparent; -fx-border-width: 1;">
-            <Label text="My Orders" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #1e1e2e;"/>
+            <Label text="Admin — Pending Applications" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #1e1e2e;"/>
             <Region HBox.hgrow="ALWAYS"/>
             <FontIcon iconLiteral="fth-user" iconSize="14" iconColor="#666"/>
             <Label fx:id="welcomeLabel" style="-fx-font-size: 13px; -fx-text-fill: #666;"/>
@@ -64,18 +64,21 @@
 
         <!-- Content -->
         <VBox spacing="12" style="-fx-padding: 24;" VBox.vgrow="ALWAYS">
-            <VBox spacing="0"
+            <VBox spacing="12"
                   style="-fx-background-color: #ffffff; -fx-padding: 16; -fx-background-radius: 10; -fx-border-color: #e0e0e8; -fx-border-radius: 10; -fx-border-width: 1;"
                   VBox.vgrow="ALWAYS">
-                <TableView fx:id="ordersTable" VBox.vgrow="ALWAYS">
-                    <columns>
-                        <TableColumn fx:id="colId" text="Order ID" prefWidth="80"/>
-                        <TableColumn fx:id="colDate" text="Date" prefWidth="150"/>
-                        <TableColumn fx:id="colTotal" text="Total" prefWidth="100"/>
-                        <TableColumn fx:id="colStatus" text="Status" prefWidth="130"/>
-                        <TableColumn fx:id="colRef" text="Payment Ref" prefWidth="160"/>
-                    </columns>
-                </TableView>
+
+                <Label text="Select an application and choose Approve or Reject:"
+                       style="-fx-font-size: 13px; -fx-text-fill: #555;"/>
+                <ListView fx:id="pendingList" VBox.vgrow="ALWAYS"/>
+                <Label fx:id="messageLabel" style="-fx-font-size: 13px;"/>
+
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <Button text="Approve Selected" onAction="#onApproveClicked"
+                            style="-fx-pref-width: 160; -fx-pref-height: 34; -fx-background-color: #1e1e2e; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 6; -fx-cursor: hand;"/>
+                    <Button text="Reject Selected" onAction="#onRejectClicked"
+                            style="-fx-pref-width: 160; -fx-pref-height: 34; -fx-background-color: #e0e0e8; -fx-text-fill: #444; -fx-background-radius: 6; -fx-cursor: hand;"/>
+                </HBox>
             </VBox>
         </VBox>
     </VBox>

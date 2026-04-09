@@ -85,6 +85,16 @@ public class CheckoutController {
     }
 
     @FXML
+    private void onAdminClicked() {
+        SceneManager.switchTo("/com/ipos/pu/ui/admin.fxml");
+    }
+
+    @FXML
+    private void onCampaignsClicked() {
+        SceneManager.switchTo("/com/ipos/pu/ui/campaigns.fxml");
+    }
+
+    @FXML
     private void onLogoutClicked() {
         SessionManager.clearSession();
         SceneManager.switchTo("/com/ipos/pu/ui/login.fxml");

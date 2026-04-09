@@ -3,26 +3,31 @@ package com.ipos.pu.ui.controller;
 import com.ipos.pu.model.Member;
 import com.ipos.pu.service.AdminService;
 import com.ipos.pu.ui.SceneManager;
+import com.ipos.pu.ui.SessionManager;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import org.springframework.stereotype.Component;
 import java.util.List;
 
-@Component
-public class AdminController {
+@Component("adminScreenController")
+public class AdminScreenController {
 
     private final AdminService adminService;
 
     @FXML private ListView<String> pendingList;
     @FXML private Label messageLabel;
+    @FXML private Label welcomeLabel;
 
-    public AdminController(AdminService adminService) {
+    public AdminScreenController(AdminService adminService) {
         this.adminService = adminService;
     }
 
     @FXML
     public void initialize() {
+        if (SessionManager.isLoggedIn()) {
+            welcomeLabel.setText(SessionManager.getCurrentMember().getFirstName());
+        }
         loadPending();
     }
 
@@ -47,7 +52,7 @@ public class AdminController {
         Long memberId = Long.parseLong(selected.split(" \\| ")[0].trim());
         adminService.approveMember(memberId, "Temp1234!");
         messageLabel.setText("Member approved. Temporary password sent by email.");
-        messageLabel.setStyle("-fx-text-fill: green;");
+        messageLabel.setStyle("-fx-text-fill: #27ae60;");
         loadPending();
     }
 
@@ -62,12 +67,33 @@ public class AdminController {
         Long memberId = Long.parseLong(selected.split(" \\| ")[0].trim());
         adminService.rejectMember(memberId);
         messageLabel.setText("Member rejected.");
-        messageLabel.setStyle("-fx-text-fill: green;");
+        messageLabel.setStyle("-fx-text-fill: #27ae60;");
         loadPending();
     }
 
     @FXML
-    private void onBackClicked() {
-        SceneManager.switchTo("/com/ipos/pu/ui/main.fxml");
+    private void onCatalogueClicked() {
+        SceneManager.switchTo("/com/ipos/pu/ui/catalogue.fxml");
+    }
+
+    @FXML
+    private void onCartClicked() {
+        SceneManager.switchTo("/com/ipos/pu/ui/cart.fxml");
+    }
+
+    @FXML
+    private void onOrdersClicked() {
+        SceneManager.switchTo("/com/ipos/pu/ui/track-orders.fxml");
+    }
+
+    @FXML
+    private void onCampaignsClicked() {
+        SceneManager.switchTo("/com/ipos/pu/ui/campaigns.fxml");
+    }
+
+    @FXML
+    private void onLogoutClicked() {
+        SessionManager.clearSession();
+        SceneManager.switchTo("/com/ipos/pu/ui/login.fxml");
     }
 }

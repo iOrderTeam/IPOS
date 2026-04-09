@@ -81,6 +81,22 @@ public class AdminService {
         return campaignRepository.save(campaign);
     }
 
+    // UC18 - Modify a campaign (change discounts and dates)
+    public Campaign modifyCampaign(Long campaignId, double discountPercentage,
+                                   LocalDate startDate, LocalDate endDate) {
+        Campaign campaign = campaignRepository.findById(campaignId)
+                .orElseThrow(() -> new IllegalArgumentException("Campaign not found."));
+
+        if (!startDate.isBefore(endDate)) {
+            throw new IllegalArgumentException("Start date must be before end date.");
+        }
+
+        campaign.setDiscountPercentage(discountPercentage);
+        campaign.setStartDate(startDate);
+        campaign.setEndDate(endDate);
+        return campaignRepository.save(campaign);
+    }
+
     // UC18 - Delete a campaign
     public void deleteCampaign(Long campaignId) {
         campaignRepository.deleteById(campaignId);
