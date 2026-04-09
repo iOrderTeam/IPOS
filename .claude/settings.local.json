@@ -1,0 +1,41 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(xargs grep:*)",
+      "Bash(xargs wc:*)",
+      "Bash(grep -E \"\\\\.\\(md|txt|gradle|xml|properties\\)$\")",
+      "Bash(./mvnw compile:*)",
+      "Bash(./mvnw test:*)",
+      "Bash(timeout 30 ./mvnw spring-boot:run -Dspring-boot.run.arguments=\"--spring.main.web-application-type=servlet\")",
+      "Bash(mkdir -p /tmp/ipos-original)",
+      "Read(//tmp/**)",
+      "Bash(rm -rf *)",
+      "Bash(unzip -o \"C:\\\\Users\\\\manas\\\\Downloads\\\\IPOS-main \\(3\\).zip\")",
+      "Bash(for f:*)",
+      "Bash(do echo:*)",
+      "Read(//tmp/ipos-original/IPOS-main/src/main/java/com/ipos/pu/**)",
+      "Bash(done)",
+      "Bash(cp -r /tmp/ipos-original/IPOS-main/src/main/java/com/ipos/pu/model/EmailLog.java \"C:/Users/manas/Downloads/IPOS-main/src/main/java/com/ipos/pu/model/EmailLog.java\")",
+      "Bash(cp -r /tmp/ipos-original/IPOS-main/src/main/java/com/ipos/pu/repository/EmailLogRepository.java \"C:/Users/manas/Downloads/IPOS-main/src/main/java/com/ipos/pu/repository/EmailLogRepository.java\")",
+      "Bash(cp -r /tmp/ipos-original/IPOS-main/src/main/resources/com/ipos/pu/ui/icon.png \"C:/Users/manas/Downloads/IPOS-main/src/main/resources/com/ipos/pu/ui/icon.png\")",
+      "Bash(rm -rf src pom.xml mvnw mvnw.cmd .mvn .idea .gitignore .gitattributes target ipospu-db.mv.db ipospu-db.trace.db)",
+      "Bash(cp -r /tmp/IPOS-main-3-inspect/IPOS-main/src .)",
+      "Bash(cp /tmp/IPOS-main-3-inspect/IPOS-main/pom.xml .)",
+      "Bash(cp /tmp/IPOS-main-3-inspect/IPOS-main/mvnw .)",
+      "Bash(cp /tmp/IPOS-main-3-inspect/IPOS-main/mvnw.cmd .)",
+      "Bash(cp /tmp/IPOS-main-4-inspect/IPOS-main/src/main/java/com/ipos/pu/model/Campaign.java \"C:/Users/manas/Downloads/IPOS-main/src/main/java/com/ipos/pu/model/Campaign.java\")",
+      "Bash(cp /tmp/IPOS-main-4-inspect/IPOS-main/src/main/java/com/ipos/pu/model/CampaignProduct.java \"C:/Users/manas/Downloads/IPOS-main/src/main/java/com/ipos/pu/model/CampaignProduct.java\")",
+      "Bash(cp /tmp/IPOS-main-4-inspect/IPOS-main/src/main/java/com/ipos/pu/repository/CampaignRepository.java \"C:/Users/manas/Downloads/IPOS-main/src/main/java/com/ipos/pu/repository/CampaignRepository.java\")",
+      "Bash(cp /tmp/IPOS-main-4-inspect/IPOS-main/src/main/java/com/ipos/pu/repository/CampaignProductRepository.java \"C:/Users/manas/Downloads/IPOS-main/src/main/java/com/ipos/pu/repository/CampaignProductRepository.java\")",
+      "Bash(cp /tmp/IPOS-main-4-inspect/IPOS-main/src/main/java/com/ipos/pu/service/AdminService.java \"C:/Users/manas/Downloads/IPOS-main/src/main/java/com/ipos/pu/service/AdminService.java\")",
+      "Bash(cp /tmp/IPOS-main-4-inspect/IPOS-main/src/main/java/com/ipos/pu/service/IposSaService.java \"C:/Users/manas/Downloads/IPOS-main/src/main/java/com/ipos/pu/service/IposSaService.java\")",
+      "Bash(cp /tmp/IPOS-main-4-inspect/IPOS-main/src/main/java/com/ipos/pu/controller/AdminController.java \"C:/Users/manas/Downloads/IPOS-main/src/main/java/com/ipos/pu/controller/AdminController.java\")",
+      "Bash(cp /tmp/IPOS-main-4-inspect/IPOS-main/src/main/java/com/ipos/pu/controller/EmailApiController.java \"C:/Users/manas/Downloads/IPOS-main/src/main/java/com/ipos/pu/controller/EmailApiController.java\")",
+      "Bash(cp /tmp/IPOS-main-4-inspect/IPOS-main/src/main/java/com/ipos/pu/ui/controller/AdminController.java \"C:/Users/manas/Downloads/IPOS-main/src/main/java/com/ipos/pu/ui/controller/AdminController.java\")",
+      "Bash(cp /tmp/IPOS-main-4-inspect/IPOS-main/src/main/java/com/ipos/pu/ui/controller/CampaignController.java \"C:/Users/manas/Downloads/IPOS-main/src/main/java/com/ipos/pu/ui/controller/CampaignController.java\")",
+      "Bash(cp /tmp/IPOS-main-4-inspect/IPOS-main/src/main/java/com/ipos/pu/ui/admin.fxml \"C:/Users/manas/Downloads/IPOS-main/src/main/resources/com/ipos/pu/ui/admin.fxml\")",
+      "Bash(cp /tmp/IPOS-main-4-inspect/IPOS-main/src/main/java/com/ipos/pu/ui/campaigns.fxml \"C:/Users/manas/Downloads/IPOS-main/src/main/resources/com/ipos/pu/ui/campaigns.fxml\")",
+      "Bash(./mvnw.cmd compile:*)"
+    ]
+  }
+}

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<HBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.ipos.pu.ui.controller.ReportsController"
+      style="-fx-background-color: #f0f2f5;">
+
+    <!-- Sidebar -->
+    <VBox prefWidth="200" spacing="4"
+          style="-fx-background-color: #1e1e2e; -fx-padding: 0;">
+
+        <VBox alignment="CENTER" style="-fx-padding: 24 16 20 16; -fx-border-color: transparent transparent #2e2e42 transparent; -fx-border-width: 1;">
+            <ImageView fitWidth="100" fitHeight="100" preserveRatio="true">
+                <image><Image url="/com/ipos/pu/ui/icon.png"/></image>
+            </ImageView>
+        </VBox>
+
+        <VBox spacing="4" style="-fx-padding: 16 12 0 12;" VBox.vgrow="ALWAYS">
+            <Button text="Catalogue" onAction="#onCatalogueClicked" maxWidth="Infinity"
+                    style="-fx-background-color: transparent; -fx-text-fill: #a0a0b8; -fx-font-size: 13px; -fx-alignment: CENTER_LEFT; -fx-padding: 10 14; -fx-cursor: hand; -fx-background-radius: 8; -fx-graphic-text-gap: 10;">
+                <graphic><FontIcon iconLiteral="fth-grid" iconSize="15" iconColor="#a0a0b8"/></graphic>
+            </Button>
+            <Button fx:id="cartNavButton" text="My Cart" onAction="#onCartClicked" maxWidth="Infinity"
+                    style="-fx-background-color: transparent; -fx-text-fill: #a0a0b8; -fx-font-size: 13px; -fx-alignment: CENTER_LEFT; -fx-padding: 10 14; -fx-cursor: hand; -fx-background-radius: 8; -fx-graphic-text-gap: 10;">
+                <graphic><FontIcon iconLiteral="fth-shopping-cart" iconSize="15" iconColor="#a0a0b8"/></graphic>
+            </Button>
+            <Button text="My Orders" onAction="#onOrdersClicked" maxWidth="Infinity"
+                    style="-fx-background-color: transparent; -fx-text-fill: #a0a0b8; -fx-font-size: 13px; -fx-alignment: CENTER_LEFT; -fx-padding: 10 14; -fx-cursor: hand; -fx-background-radius: 8; -fx-graphic-text-gap: 10;">
+                <graphic><FontIcon iconLiteral="fth-package" iconSize="15" iconColor="#a0a0b8"/></graphic>
+            </Button>
+            <Button text="Reports" maxWidth="Infinity"
+                    style="-fx-background-color: #2e2e52; -fx-text-fill: #ffffff; -fx-font-size: 13px; -fx-font-weight: bold; -fx-alignment: CENTER_LEFT; -fx-padding: 10 14; -fx-background-radius: 8; -fx-graphic-text-gap: 10;">
+                <graphic><FontIcon iconLiteral="fth-bar-chart-2" iconSize="15" iconColor="#ffffff"/></graphic>
+            </Button>
+        </VBox>
+
+        <VBox style="-fx-padding: 0 12 20 12;">
+            <Button text="Logout" onAction="#onLogoutClicked" maxWidth="Infinity"
+                    style="-fx-background-color: transparent; -fx-text-fill: #a0a0b8; -fx-font-size: 13px; -fx-alignment: CENTER_LEFT; -fx-padding: 10 14; -fx-cursor: hand; -fx-background-radius: 8; -fx-graphic-text-gap: 10;">
+                <graphic><FontIcon iconLiteral="fth-log-out" iconSize="15" iconColor="#a0a0b8"/></graphic>
+            </Button>
+        </VBox>
+    </VBox>
+
+    <!-- Main content -->
+    <VBox HBox.hgrow="ALWAYS" style="-fx-background-color: #f0f2f5;">
+
+        <!-- Header -->
+        <HBox alignment="CENTER_LEFT" spacing="12"
+              style="-fx-background-color: #ffffff; -fx-padding: 16 24; -fx-border-color: transparent transparent #e0e0e8 transparent; -fx-border-width: 1;">
+            <Label text="Reports" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #1e1e2e;"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <FontIcon iconLiteral="fth-user" iconSize="14" iconColor="#666"/>
+            <Label fx:id="welcomeLabel" style="-fx-font-size: 13px; -fx-text-fill: #666;"/>
+        </HBox>
+
+        <!-- Content -->
+        <VBox spacing="12" style="-fx-padding: 24;" VBox.vgrow="ALWAYS">
+
+            <!-- Controls card -->
+            <HBox spacing="16" alignment="CENTER_LEFT"
+                  style="-fx-background-color: #ffffff; -fx-padding: 16; -fx-background-radius: 10; -fx-border-color: #e0e0e8; -fx-border-radius: 10; -fx-border-width: 1;">
+                <Label text="From:" style="-fx-text-fill: #555; -fx-font-size: 13px;"/>
+                <DatePicker fx:id="startDatePicker" style="-fx-pref-width: 150;"/>
+                <Label text="To:" style="-fx-text-fill: #555; -fx-font-size: 13px;"/>
+                <DatePicker fx:id="endDatePicker" style="-fx-pref-width: 150;"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button text="Sales Report" onAction="#onSalesReportClicked"
+                        style="-fx-pref-height: 34; -fx-background-color: #1e1e2e; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 6; -fx-cursor: hand; -fx-padding: 6 14;"/>
+                <Button text="Campaign Report" onAction="#onCampaignReportClicked"
+                        style="-fx-pref-height: 34; -fx-background-color: #1e1e2e; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 6; -fx-cursor: hand; -fx-padding: 6 14;"/>
+                <ComboBox fx:id="campaignCombo" promptText="Select Campaign" style="-fx-pref-width: 200;"/>
+                <Button text="Engagement Report" onAction="#onEngagementReportClicked"
+                        style="-fx-pref-height: 34; -fx-background-color: #1e1e2e; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 6; -fx-cursor: hand; -fx-padding: 6 14;"/>
+                <Button text="Print Report" onAction="#onPrintReportClicked"
+                        style="-fx-pref-height: 34; -fx-background-color: #4a7c59; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 6; -fx-cursor: hand; -fx-padding: 6 14;">
+                    <graphic><FontIcon iconLiteral="fth-printer" iconSize="14" iconColor="#ffffff"/></graphic>
+                </Button>
+            </HBox>
+
+            <!-- Report output card -->
+            <VBox spacing="0"
+                  style="-fx-background-color: #ffffff; -fx-padding: 16; -fx-background-radius: 10; -fx-border-color: #e0e0e8; -fx-border-radius: 10; -fx-border-width: 1;"
+                  VBox.vgrow="ALWAYS">
+                <TextArea fx:id="reportOutput" editable="false" wrapText="true"
+                          style="-fx-font-family: 'Consolas', 'Courier New', monospace; -fx-font-size: 13px; -fx-control-inner-background: #fafafa;"
+                          VBox.vgrow="ALWAYS"
+                          promptText="Select a date range and click a report button to generate a report."/>
+            </VBox>
+        </VBox>
+    </VBox>
+</HBox>
