@@ -25,6 +25,7 @@ public class CartController {
     @GetMapping("/{memberId}")
     public ResponseEntity<?> getCart(@PathVariable Long memberId) {
         return ResponseEntity.ok(cartService.getCart(memberId));
+
     }
 
     @DeleteMapping("/{memberId}")

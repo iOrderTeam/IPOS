@@ -21,4 +21,8 @@ public class SessionManager {
     public static boolean isLoggedIn() {
         return currentMember != null;
     }
+
+    public static boolean isAdmin() {
+        return currentMember != null && currentMember.isAdmin();
+    }
 }

@@ -22,6 +22,9 @@ public class Order {
     private double totalAmount;
     private String paymentReference;
 
+    @Column(length = 500)
+    private String deliveryAddress;
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -39,4 +42,7 @@ public class Order {
 
     public String getPaymentReference() { return paymentReference; }
     public void setPaymentReference(String paymentReference) { this.paymentReference = paymentReference; }
+
+    public String getDeliveryAddress() { return deliveryAddress; }
+    public void setDeliveryAddress(String deliveryAddress) { this.deliveryAddress = deliveryAddress; }
 }

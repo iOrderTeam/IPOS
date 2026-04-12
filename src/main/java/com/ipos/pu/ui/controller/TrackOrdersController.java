@@ -1,6 +1,8 @@
 package com.ipos.pu.ui.controller;
 
 import com.ipos.pu.model.Order;
+import com.ipos.pu.model.OrderItem;
+import com.ipos.pu.repository.OrderItemRepository;
 import com.ipos.pu.service.CartService;
 import com.ipos.pu.service.OrderService;
 import com.ipos.pu.ui.SceneManager;
@@ -17,6 +19,7 @@ public class TrackOrdersController {
 
     private final OrderService orderService;
     private final CartService cartService;
+    private final OrderItemRepository orderItemRepository;
 
     @FXML private TableView<Order> ordersTable;
     @FXML private TableColumn<Order, String> colId;
@@ -26,10 +29,21 @@ public class TrackOrdersController {
     @FXML private TableColumn<Order, String> colRef;
     @FXML private Label welcomeLabel;
     @FXML private Button cartNavButton;
+    @FXML private Button campaignsNavBtn;
+    @FXML private Button reportsNavBtn;
 
-    public TrackOrdersController(OrderService orderService, CartService cartService) {
+    @FXML private TableView<OrderItem> itemsTable;
+    @FXML private TableColumn<OrderItem, String> colItemProduct;
+    @FXML private TableColumn<OrderItem, String> colItemQty;
+    @FXML private TableColumn<OrderItem, String> colItemPrice;
+    @FXML private TableColumn<OrderItem, String> colItemTotal;
+    @FXML private Label orderDetailLabel;
+
+    public TrackOrdersController(OrderService orderService, CartService cartService,
+                                  OrderItemRepository orderItemRepository) {
         this.orderService = orderService;
         this.cartService = cartService;
+        this.orderItemRepository = orderItemRepository;
     }
 
     @FXML
@@ -38,10 +52,35 @@ public class TrackOrdersController {
         colDate.setCellValueFactory(d -> new SimpleStringProperty(
                 d.getValue().getPlacedAt().toLocalDate().toString()));
         colTotal.setCellValueFactory(d -> new SimpleStringProperty(
-                "£" + String.format("%.2f", d.getValue().getTotalAmount())));
+                "\u00a3" + String.format("%.2f", d.getValue().getTotalAmount())));
         colStatus.setCellValueFactory(d -> new SimpleStringProperty(
                 d.getValue().getStatus().toString()));
         colRef.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getPaymentReference()));
+
+        colItemProduct.setCellValueFactory(d -> new SimpleStringProperty(
+                d.getValue().getProduct().getName()));
+        colItemQty.setCellValueFactory(d -> new SimpleStringProperty(
+                String.valueOf(d.getValue().getQuantity())));
+        colItemPrice.setCellValueFactory(d -> new SimpleStringProperty(
+                "\u00a3" + String.format("%.2f", d.getValue().getPriceAtTimeOfOrder())));
+        colItemTotal.setCellValueFactory(d -> new SimpleStringProperty(
+                "\u00a3" + String.format("%.2f",
+                        d.getValue().getQuantity() * d.getValue().getPriceAtTimeOfOrder())));
+
+        ordersTable.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null) {
+                List<OrderItem> items = orderItemRepository.findByOrder(newVal);
+                itemsTable.setItems(FXCollections.observableArrayList(items));
+                String address = newVal.getDeliveryAddress() == null ? "" :
+                        "  |  Delivery: " + newVal.getDeliveryAddress().replace("\n", ", ");
+                orderDetailLabel.setText("Order #" + newVal.getId() + " - "
+                        + newVal.getStatus() + " - Placed: "
+                        + newVal.getPlacedAt().toLocalDate() + address);
+            } else {
+                itemsTable.setItems(FXCollections.emptyObservableList());
+                orderDetailLabel.setText("Select an order above to view its items.");
+            }
+        });
 
         Long memberId = SessionManager.getCurrentMember().getId();
         List<Order> orders = orderService.getOrdersForMember(memberId);
@@ -50,6 +89,10 @@ public class TrackOrdersController {
             welcomeLabel.setText(SessionManager.getCurrentMember().getFirstName());
             int count = cartService.getCartItemCount(memberId);
             cartNavButton.setText("My Cart" + (count > 0 ? "  (" + count + ")" : ""));
+        }
+        if (!SessionManager.isAdmin()) {
+            campaignsNavBtn.setVisible(false); campaignsNavBtn.setManaged(false);
+            reportsNavBtn.setVisible(false); reportsNavBtn.setManaged(false);
         }
     }
 
@@ -64,13 +107,18 @@ public class TrackOrdersController {
     }
 
     @FXML
-    private void onAdminClicked() {
-        SceneManager.switchTo("/com/ipos/pu/ui/admin.fxml");
+    private void onPromotionsClicked() {
+        SceneManager.switchTo("/com/ipos/pu/ui/promotions.fxml");
     }
 
     @FXML
     private void onCampaignsClicked() {
         SceneManager.switchTo("/com/ipos/pu/ui/campaigns.fxml");
+    }
+
+    @FXML
+    private void onReportsClicked() {
+        SceneManager.switchTo("/com/ipos/pu/ui/reports.fxml");
     }
 
     @FXML

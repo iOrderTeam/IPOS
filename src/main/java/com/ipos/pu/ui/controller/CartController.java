@@ -26,6 +26,8 @@ public class CartController {
     @FXML private Label totalLabel;
     @FXML private Label welcomeLabel;
     @FXML private Button cartNavButton;
+    @FXML private Button campaignsNavBtn;
+    @FXML private Button reportsNavBtn;
 
     private ObservableList<CartItem> cartItems;
 
@@ -37,9 +39,17 @@ public class CartController {
     public void initialize() {
         colProduct.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getProduct().getName()));
         colQty.setCellValueFactory(d -> new SimpleStringProperty(String.valueOf(d.getValue().getQuantity())));
-        colUnitPrice.setCellValueFactory(d -> new SimpleStringProperty("£" + d.getValue().getProduct().getPrice()));
+        colUnitPrice.setCellValueFactory(d -> {
+            double original = d.getValue().getProduct().getPrice();
+            double discounted = cartService.getDiscountedUnitPrice(d.getValue().getProduct());
+            if (discounted < original) {
+                return new SimpleStringProperty(String.format("\u00a3%.2f (was \u00a3%.2f)", discounted, original));
+            }
+            return new SimpleStringProperty(String.format("\u00a3%.2f", original));
+        });
         colLineTotal.setCellValueFactory(d -> new SimpleStringProperty(
-                "£" + String.format("%.2f", d.getValue().getQuantity() * d.getValue().getProduct().getPrice())));
+                "\u00a3" + String.format("%.2f",
+                        d.getValue().getQuantity() * cartService.getDiscountedUnitPrice(d.getValue().getProduct()))));
 
         colRemove.setCellFactory(col -> new TableCell<>() {
             private final Button btn = new Button("Remove");
@@ -60,6 +70,10 @@ public class CartController {
 
         if (SessionManager.isLoggedIn()) {
             welcomeLabel.setText(SessionManager.getCurrentMember().getFirstName());
+        }
+        if (!SessionManager.isAdmin()) {
+            campaignsNavBtn.setVisible(false); campaignsNavBtn.setManaged(false);
+            reportsNavBtn.setVisible(false); reportsNavBtn.setManaged(false);
         }
         refreshCart();
     }
@@ -93,13 +107,18 @@ public class CartController {
     }
 
     @FXML
-    private void onAdminClicked() {
-        SceneManager.switchTo("/com/ipos/pu/ui/admin.fxml");
+    private void onPromotionsClicked() {
+        SceneManager.switchTo("/com/ipos/pu/ui/promotions.fxml");
     }
 
     @FXML
     private void onCampaignsClicked() {
         SceneManager.switchTo("/com/ipos/pu/ui/campaigns.fxml");
+    }
+
+    @FXML
+    private void onReportsClicked() {
+        SceneManager.switchTo("/com/ipos/pu/ui/reports.fxml");
     }
 
     @FXML

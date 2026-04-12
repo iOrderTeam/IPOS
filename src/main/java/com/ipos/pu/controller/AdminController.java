@@ -15,31 +15,6 @@ public class AdminController {
         this.adminService = adminService;
     }
 
-    @GetMapping("/pending")
-    public ResponseEntity<?>  getPending() {
-        return ResponseEntity.ok(adminService.getPendingApplications());
-    }
-
-    @PostMapping("/approve/{memberId}")
-    public ResponseEntity<?>  approve(@PathVariable Long memberId, @RequestParam String temporaryPassword) {
-        try {
-            adminService.approveMember(memberId, temporaryPassword);
-            return ResponseEntity.ok("Member approved");
-        }  catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
-
-    @PostMapping("/reject/{memberId}")
-    public ResponseEntity<?> reject(@PathVariable Long memberId) {
-        try {
-            adminService.rejectMember(memberId);
-            return ResponseEntity.ok("Member rejected.");
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
-
     @PostMapping("/campaigns")
     public ResponseEntity<?> createCampaign(@RequestBody Map<String, String> body) {
         try {

@@ -7,6 +7,7 @@ import com.ipos.pu.ui.SessionManager;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import org.springframework.stereotype.Component;
 import java.util.UUID;
@@ -18,6 +19,7 @@ public class CheckoutController {
     private final CartService cartService;
 
     @FXML private Label totalLabel;
+    @FXML private TextArea deliveryAddressField;
     @FXML private TextField cardNameField;
     @FXML private TextField cardNumberField;
     @FXML private TextField expiryField;
@@ -25,6 +27,8 @@ public class CheckoutController {
     @FXML private Label messageLabel;
     @FXML private Label welcomeLabel;
     @FXML private Button cartNavButton;
+    @FXML private Button campaignsNavBtn;
+    @FXML private Button reportsNavBtn;
 
     public CheckoutController(OrderService orderService, CartService cartService) {
         this.orderService = orderService;
@@ -41,6 +45,10 @@ public class CheckoutController {
             int count = cartService.getCartItemCount(memberId);
             cartNavButton.setText("My Cart" + (count > 0 ? "  (" + count + ")" : ""));
         }
+        if (!SessionManager.isAdmin()) {
+            campaignsNavBtn.setVisible(false); campaignsNavBtn.setManaged(false);
+            reportsNavBtn.setVisible(false); reportsNavBtn.setManaged(false);
+        }
         if (loyalty) {
             double discounted = total * 0.90;
             totalLabel.setText("Total: £" + String.format("%.2f", discounted));
@@ -53,20 +61,78 @@ public class CheckoutController {
 
     @FXML
     private void onConfirmClicked() {
-        if (cardNameField.getText().isBlank() || cardNumberField.getText().isBlank()
-                || expiryField.getText().isBlank() || cvvField.getText().isBlank()) {
-            messageLabel.setText("Please fill in all payment details.");
+        String deliveryAddress = deliveryAddressField.getText().trim();
+        String name = cardNameField.getText().trim();
+        String number = cardNumberField.getText().trim().replaceAll("\\s+", "");
+        String expiry = expiryField.getText().trim();
+        String cvv = cvvField.getText().trim();
+
+        if (deliveryAddress.isBlank()) {
+            showError("Please enter a delivery address.");
+            return;
+        }
+        if (deliveryAddress.length() < 10) {
+            showError("Please include street, city and postcode.");
+            return;
+        }
+
+        // Validate all fields filled
+        if (name.isBlank() || number.isBlank() || expiry.isBlank() || cvv.isBlank()) {
+            showError("Please fill in all payment details.");
+            return;
+        }
+
+        // Validate cardholder name (letters and spaces only)
+        if (!name.matches("[a-zA-Z ]+")) {
+            showError("Cardholder name must contain only letters and spaces.");
+            return;
+        }
+
+        // Validate card number (16 digits)
+        if (!number.matches("\\d{16}")) {
+            showError("Card number must be 16 digits.");
+            return;
+        }
+
+        // Validate expiry format MM/YY and not expired
+        if (!expiry.matches("(0[1-9]|1[0-2])/\\d{2}")) {
+            showError("Expiry must be in MM/YY format (e.g. 03/27).");
+            return;
+        }
+        try {
+            String[] parts = expiry.split("/");
+            int month = Integer.parseInt(parts[0]);
+            int year = 2000 + Integer.parseInt(parts[1]);
+            java.time.YearMonth expiryYM = java.time.YearMonth.of(year, month);
+            if (expiryYM.isBefore(java.time.YearMonth.now())) {
+                showError("Card has expired.");
+                return;
+            }
+        } catch (Exception e) {
+            showError("Invalid expiry date.");
+            return;
+        }
+
+        // Validate CVV (3 or 4 digits)
+        if (!cvv.matches("\\d{3,4}")) {
+            showError("CVV must be 3 or 4 digits.");
             return;
         }
 
         try {
             Long memberId = SessionManager.getCurrentMember().getId();
             String paymentRef = UUID.randomUUID().toString().substring(0, 12).toUpperCase();
-            orderService.placeOrder(memberId, paymentRef);
+            String maskedCard = "****-****-****-" + number.substring(12);
+            orderService.placeOrder(memberId, paymentRef, name, maskedCard, expiry, deliveryAddress);
             SceneManager.switchTo("/com/ipos/pu/ui/track-orders.fxml");
         } catch (Exception e) {
-            messageLabel.setText(e.getMessage());
+            showError(e.getMessage());
         }
+    }
+
+    private void showError(String msg) {
+        messageLabel.setText(msg);
+        messageLabel.setStyle("-fx-text-fill: red;");
     }
 
     @FXML
@@ -85,13 +151,18 @@ public class CheckoutController {
     }
 
     @FXML
-    private void onAdminClicked() {
-        SceneManager.switchTo("/com/ipos/pu/ui/admin.fxml");
+    private void onPromotionsClicked() {
+        SceneManager.switchTo("/com/ipos/pu/ui/promotions.fxml");
     }
 
     @FXML
     private void onCampaignsClicked() {
         SceneManager.switchTo("/com/ipos/pu/ui/campaigns.fxml");
+    }
+
+    @FXML
+    private void onReportsClicked() {
+        SceneManager.switchTo("/com/ipos/pu/ui/reports.fxml");
     }
 
     @FXML

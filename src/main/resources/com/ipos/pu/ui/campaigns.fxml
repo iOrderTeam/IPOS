@@ -10,7 +10,7 @@
       style="-fx-background-color: #f0f2f5;">
 
     <!-- Sidebar -->
-    <VBox prefWidth="200" spacing="4"
+    <VBox prefWidth="200" minWidth="200" maxWidth="200" spacing="4"
           style="-fx-background-color: #1e1e2e; -fx-padding: 0;">
 
         <VBox alignment="CENTER" style="-fx-padding: 24 16 20 16; -fx-border-color: transparent transparent #2e2e42 transparent; -fx-border-width: 1;">
@@ -32,13 +32,17 @@
                     style="-fx-background-color: transparent; -fx-text-fill: #a0a0b8; -fx-font-size: 13px; -fx-alignment: CENTER_LEFT; -fx-padding: 10 14; -fx-cursor: hand; -fx-background-radius: 8; -fx-graphic-text-gap: 10;">
                 <graphic><FontIcon iconLiteral="fth-package" iconSize="15" iconColor="#a0a0b8"/></graphic>
             </Button>
-            <Button text="Admin" onAction="#onAdminClicked" maxWidth="Infinity"
+            <Button text="Promotions" onAction="#onPromotionsClicked" maxWidth="Infinity"
                     style="-fx-background-color: transparent; -fx-text-fill: #a0a0b8; -fx-font-size: 13px; -fx-alignment: CENTER_LEFT; -fx-padding: 10 14; -fx-cursor: hand; -fx-background-radius: 8; -fx-graphic-text-gap: 10;">
-                <graphic><FontIcon iconLiteral="fth-shield" iconSize="15" iconColor="#a0a0b8"/></graphic>
+                <graphic><FontIcon iconLiteral="fth-percent" iconSize="15" iconColor="#a0a0b8"/></graphic>
             </Button>
             <Button text="Campaigns" maxWidth="Infinity"
                     style="-fx-background-color: #2e2e52; -fx-text-fill: #ffffff; -fx-font-size: 13px; -fx-font-weight: bold; -fx-alignment: CENTER_LEFT; -fx-padding: 10 14; -fx-background-radius: 8; -fx-graphic-text-gap: 10;">
                 <graphic><FontIcon iconLiteral="fth-tag" iconSize="15" iconColor="#ffffff"/></graphic>
+            </Button>
+            <Button text="Reports" onAction="#onReportsClicked" maxWidth="Infinity"
+                    style="-fx-background-color: transparent; -fx-text-fill: #a0a0b8; -fx-font-size: 13px; -fx-alignment: CENTER_LEFT; -fx-padding: 10 14; -fx-cursor: hand; -fx-background-radius: 8; -fx-graphic-text-gap: 10;">
+                <graphic><FontIcon iconLiteral="fth-bar-chart-2" iconSize="15" iconColor="#a0a0b8"/></graphic>
             </Button>
         </VBox>
 
@@ -56,53 +60,86 @@
         <!-- Header -->
         <HBox alignment="CENTER_LEFT" spacing="12"
               style="-fx-background-color: #ffffff; -fx-padding: 16 24; -fx-border-color: transparent transparent #e0e0e8 transparent; -fx-border-width: 1;">
-            <Label text="Promotional Campaigns" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #1e1e2e;"/>
+            <Label text="Campaign Management" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #1e1e2e;"/>
             <Region HBox.hgrow="ALWAYS"/>
             <FontIcon iconLiteral="fth-user" iconSize="14" iconColor="#666"/>
             <Label fx:id="welcomeLabel" style="-fx-font-size: 13px; -fx-text-fill: #666;"/>
         </HBox>
 
-        <!-- Content -->
-        <VBox spacing="12" style="-fx-padding: 24;" VBox.vgrow="ALWAYS">
-            <VBox spacing="12"
-                  style="-fx-background-color: #ffffff; -fx-padding: 16; -fx-background-radius: 10; -fx-border-color: #e0e0e8; -fx-border-radius: 10; -fx-border-width: 1;"
-                  VBox.vgrow="ALWAYS">
+        <!-- Content (scrollable so both tables can breathe) -->
+        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" VBox.vgrow="ALWAYS"
+                    style="-fx-background-color: #f0f2f5; -fx-background: #f0f2f5;">
+        <VBox spacing="12" style="-fx-padding: 24; -fx-background-color: #f0f2f5;">
 
-                <TableView fx:id="campaignsTable" VBox.vgrow="ALWAYS">
+            <!-- Campaigns table card -->
+            <VBox spacing="12"
+                  style="-fx-background-color: #ffffff; -fx-padding: 16; -fx-background-radius: 10; -fx-border-color: #e0e0e8; -fx-border-radius: 10; -fx-border-width: 1;">
+
+                <TableView fx:id="campaignsTable" prefHeight="320" minHeight="280">
                     <columns>
-                        <TableColumn fx:id="colName" text="Name" prefWidth="160"/>
-                        <TableColumn fx:id="colDiscount" text="Discount %" prefWidth="100"/>
-                        <TableColumn fx:id="colStart" text="Start Date" prefWidth="120"/>
-                        <TableColumn fx:id="colEnd" text="End Date" prefWidth="120"/>
-                        <TableColumn fx:id="colHits" text="Hits" prefWidth="80"/>
+                        <TableColumn fx:id="colName" text="Name" prefWidth="140"/>
+                        <TableColumn fx:id="colDiscount" text="Discount %" prefWidth="80"/>
+                        <TableColumn fx:id="colStart" text="Start Date" prefWidth="100"/>
+                        <TableColumn fx:id="colEnd" text="End Date" prefWidth="100"/>
+                        <TableColumn fx:id="colHits" text="Hits" prefWidth="60"/>
+                        <TableColumn fx:id="colActive" text="Active" prefWidth="60"/>
                     </columns>
                 </TableView>
 
-                <Label text="Create New Campaign:" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #1e1e2e;"/>
+                <Label text="Campaign Details:" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #1e1e2e;"/>
                 <HBox spacing="8">
                     <TextField fx:id="nameField" promptText="Name"
-                               style="-fx-pref-width: 150; -fx-pref-height: 34; -fx-background-color: #f5f5fa; -fx-border-color: #e0e0e8; -fx-border-radius: 6; -fx-background-radius: 6; -fx-padding: 6 10;"/>
+                               style="-fx-pref-width: 130; -fx-pref-height: 34; -fx-background-color: #f5f5fa; -fx-border-color: #e0e0e8; -fx-border-radius: 6; -fx-background-radius: 6; -fx-padding: 6 10;"/>
                     <TextField fx:id="descField" promptText="Description"
-                               style="-fx-pref-width: 150; -fx-pref-height: 34; -fx-background-color: #f5f5fa; -fx-border-color: #e0e0e8; -fx-border-radius: 6; -fx-background-radius: 6; -fx-padding: 6 10;"/>
+                               style="-fx-pref-width: 130; -fx-pref-height: 34; -fx-background-color: #f5f5fa; -fx-border-color: #e0e0e8; -fx-border-radius: 6; -fx-background-radius: 6; -fx-padding: 6 10;"/>
                     <TextField fx:id="discountField" promptText="Discount %"
-                               style="-fx-pref-width: 100; -fx-pref-height: 34; -fx-background-color: #f5f5fa; -fx-border-color: #e0e0e8; -fx-border-radius: 6; -fx-background-radius: 6; -fx-padding: 6 10;"/>
+                               style="-fx-pref-width: 90; -fx-pref-height: 34; -fx-background-color: #f5f5fa; -fx-border-color: #e0e0e8; -fx-border-radius: 6; -fx-background-radius: 6; -fx-padding: 6 10;"/>
                     <TextField fx:id="startField" promptText="Start (yyyy-MM-dd)"
-                               style="-fx-pref-width: 160; -fx-pref-height: 34; -fx-background-color: #f5f5fa; -fx-border-color: #e0e0e8; -fx-border-radius: 6; -fx-background-radius: 6; -fx-padding: 6 10;"/>
+                               style="-fx-pref-width: 140; -fx-pref-height: 34; -fx-background-color: #f5f5fa; -fx-border-color: #e0e0e8; -fx-border-radius: 6; -fx-background-radius: 6; -fx-padding: 6 10;"/>
                     <TextField fx:id="endField" promptText="End (yyyy-MM-dd)"
-                               style="-fx-pref-width: 160; -fx-pref-height: 34; -fx-background-color: #f5f5fa; -fx-border-color: #e0e0e8; -fx-border-radius: 6; -fx-background-radius: 6; -fx-padding: 6 10;"/>
+                               style="-fx-pref-width: 140; -fx-pref-height: 34; -fx-background-color: #f5f5fa; -fx-border-color: #e0e0e8; -fx-border-radius: 6; -fx-background-radius: 6; -fx-padding: 6 10;"/>
                 </HBox>
-
-                <Label fx:id="messageLabel" style="-fx-font-size: 13px;"/>
 
                 <HBox spacing="10" alignment="CENTER_LEFT">
-                    <Button text="Create Campaign" onAction="#onCreateClicked"
-                            style="-fx-pref-width: 160; -fx-pref-height: 34; -fx-background-color: #1e1e2e; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 6; -fx-cursor: hand;"/>
-                    <Button text="Modify Selected" onAction="#onModifyClicked"
-                            style="-fx-pref-width: 160; -fx-pref-height: 34; -fx-background-color: #e0e0e8; -fx-text-fill: #444; -fx-background-radius: 6; -fx-cursor: hand;"/>
-                    <Button text="Delete Selected" onAction="#onDeleteClicked"
-                            style="-fx-pref-width: 160; -fx-pref-height: 34; -fx-background-color: #e0e0e8; -fx-text-fill: #444; -fx-background-radius: 6; -fx-cursor: hand;"/>
+                    <Button text="Create" onAction="#onCreateClicked"
+                            style="-fx-pref-width: 100; -fx-pref-height: 34; -fx-background-color: #1e1e2e; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 6; -fx-cursor: hand;"/>
+                    <Button text="Modify" onAction="#onModifyClicked"
+                            style="-fx-pref-width: 100; -fx-pref-height: 34; -fx-background-color: #e0e0e8; -fx-text-fill: #444; -fx-background-radius: 6; -fx-cursor: hand;"/>
+                    <Button text="Delete" onAction="#onDeleteClicked"
+                            style="-fx-pref-width: 100; -fx-pref-height: 34; -fx-background-color: #e0e0e8; -fx-text-fill: #444; -fx-background-radius: 6; -fx-cursor: hand;"/>
+                    <Button text="Terminate Early" onAction="#onTerminateClicked"
+                            style="-fx-pref-width: 140; -fx-pref-height: 34; -fx-background-color: #c0392b; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 6; -fx-cursor: hand;"/>
                 </HBox>
             </VBox>
+
+            <!-- Campaign Products card -->
+            <VBox spacing="10"
+                  style="-fx-background-color: #ffffff; -fx-padding: 16; -fx-background-radius: 10; -fx-border-color: #e0e0e8; -fx-border-radius: 10; -fx-border-width: 1;">
+
+                <Label text="Products in Selected Campaign:" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #1e1e2e;"/>
+                <TableView fx:id="productsTable" prefHeight="280" minHeight="240">
+                    <columns>
+                        <TableColumn fx:id="colProdName" text="Product" prefWidth="200"/>
+                        <TableColumn fx:id="colProdPrice" text="Price" prefWidth="100"/>
+                        <TableColumn fx:id="colProdHits" text="Product Hits" prefWidth="100"/>
+                    </columns>
+                </TableView>
+
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <ComboBox fx:id="productCombo" promptText="Select product to add"
+                              style="-fx-pref-width: 250; -fx-pref-height: 34;"/>
+                    <Button text="Add Product" onAction="#onAddProductClicked"
+                            style="-fx-pref-width: 120; -fx-pref-height: 34; -fx-background-color: #1e1e2e; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 6; -fx-cursor: hand;"/>
+                    <Button text="Remove Product" onAction="#onRemoveProductClicked"
+                            style="-fx-pref-width: 140; -fx-pref-height: 34; -fx-background-color: #e0e0e8; -fx-text-fill: #444; -fx-background-radius: 6; -fx-cursor: hand;"/>
+                </HBox>
+            </VBox>
+
+            <!-- Status / conflict messages: own row so wrapped text never gets clipped -->
+            <VBox style="-fx-background-color: #ffffff; -fx-padding: 12 16; -fx-background-radius: 10; -fx-border-color: #e0e0e8; -fx-border-radius: 10; -fx-border-width: 1;">
+                <Label fx:id="messageLabel" style="-fx-font-size: 12px;" wrapText="true" maxWidth="Infinity" minHeight="60"/>
+            </VBox>
         </VBox>
+        </ScrollPane>
     </VBox>
 </HBox>

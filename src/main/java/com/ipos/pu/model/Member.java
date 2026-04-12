@@ -28,6 +28,7 @@ public class Member {
     private MemberStatus status;
 
     private boolean passwordChangeRequired;
+    private boolean admin;
 
     private int orderCounter;
 
@@ -75,4 +76,7 @@ public class Member {
 
     public String getAddress() { return address; }
     public void setAddress(String address) { this.address = address; }
+
+    public boolean isAdmin() { return admin; }
+    public void setAdmin(boolean admin) { this.admin = admin; }
 }

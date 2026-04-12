@@ -9,4 +9,5 @@ import java.time.LocalDate;
 @Repository
 public interface CampaignRepository extends JpaRepository<Campaign,Long> {
     List<Campaign> findByStartDateBeforeAndEndDateAfter(LocalDate now, LocalDate now2);
+    List<Campaign> findByActiveTrueAndStartDateLessThanEqualAndEndDateGreaterThanEqual(LocalDate now, LocalDate now2);
 }

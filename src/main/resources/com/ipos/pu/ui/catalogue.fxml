@@ -11,7 +11,7 @@
       style="-fx-background-color: #f0f2f5;">
 
     <!-- Sidebar -->
-    <VBox prefWidth="200" spacing="4"
+    <VBox prefWidth="200" minWidth="200" maxWidth="200" spacing="4"
           style="-fx-background-color: #1e1e2e; -fx-padding: 0;">
 
         <!-- Logo area -->
@@ -35,13 +35,17 @@
                     style="-fx-background-color: transparent; -fx-text-fill: #a0a0b8; -fx-font-size: 13px; -fx-alignment: CENTER_LEFT; -fx-padding: 10 14; -fx-cursor: hand; -fx-background-radius: 8; -fx-graphic-text-gap: 10;">
                 <graphic><FontIcon iconLiteral="fth-package" iconSize="15" iconColor="#a0a0b8"/></graphic>
             </Button>
-            <Button text="Admin" onAction="#onAdminClicked" maxWidth="Infinity"
+            <Button text="Promotions" onAction="#onPromotionsClicked" maxWidth="Infinity"
                     style="-fx-background-color: transparent; -fx-text-fill: #a0a0b8; -fx-font-size: 13px; -fx-alignment: CENTER_LEFT; -fx-padding: 10 14; -fx-cursor: hand; -fx-background-radius: 8; -fx-graphic-text-gap: 10;">
-                <graphic><FontIcon iconLiteral="fth-shield" iconSize="15" iconColor="#a0a0b8"/></graphic>
+                <graphic><FontIcon iconLiteral="fth-percent" iconSize="15" iconColor="#a0a0b8"/></graphic>
             </Button>
-            <Button text="Campaigns" onAction="#onCampaignsClicked" maxWidth="Infinity"
+            <Button fx:id="campaignsNavBtn" text="Campaigns" onAction="#onCampaignsClicked" maxWidth="Infinity"
                     style="-fx-background-color: transparent; -fx-text-fill: #a0a0b8; -fx-font-size: 13px; -fx-alignment: CENTER_LEFT; -fx-padding: 10 14; -fx-cursor: hand; -fx-background-radius: 8; -fx-graphic-text-gap: 10;">
                 <graphic><FontIcon iconLiteral="fth-tag" iconSize="15" iconColor="#a0a0b8"/></graphic>
+            </Button>
+            <Button fx:id="reportsNavBtn" text="Reports" onAction="#onReportsClicked" maxWidth="Infinity"
+                    style="-fx-background-color: transparent; -fx-text-fill: #a0a0b8; -fx-font-size: 13px; -fx-alignment: CENTER_LEFT; -fx-padding: 10 14; -fx-cursor: hand; -fx-background-radius: 8; -fx-graphic-text-gap: 10;">
+                <graphic><FontIcon iconLiteral="fth-bar-chart-2" iconSize="15" iconColor="#a0a0b8"/></graphic>
             </Button>
         </VBox>
 
@@ -88,7 +92,7 @@
                     <columns>
                         <TableColumn fx:id="colName" text="Name" prefWidth="220"/>
                         <TableColumn fx:id="colBrand" text="Brand" prefWidth="160"/>
-                        <TableColumn fx:id="colPrice" text="Price" prefWidth="100"/>
+                        <TableColumn fx:id="colPrice" text="Price" prefWidth="160"/>
                         <TableColumn fx:id="colStock" text="In Stock" prefWidth="100"/>
                     </columns>
                 </TableView>

@@ -60,6 +60,10 @@
 			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-mail</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.openjfx</groupId>
 			<artifactId>javafx-controls</artifactId>
 			<version>21</version>
@@ -78,6 +82,11 @@
 			<groupId>org.kordamp.ikonli</groupId>
 			<artifactId>ikonli-feather-pack</artifactId>
 			<version>12.3.1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.github.librepdf</groupId>
+			<artifactId>openpdf</artifactId>
+			<version>1.3.43</version>
 		</dependency>
 	</dependencies>
 

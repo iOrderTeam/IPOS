@@ -1,11 +1,7 @@
 package com.ipos.pu.service;
 
-import com.ipos.pu.model.CartItem;
-import com.ipos.pu.model.Member;
-import com.ipos.pu.model.Product;
-import com.ipos.pu.repository.CartItemRepository;
-import com.ipos.pu.repository.MemberRepository;
-import com.ipos.pu.repository.ProductRepository;
+import com.ipos.pu.model.*;
+import com.ipos.pu.repository.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
@@ -16,13 +12,16 @@ public class CartService {
     private final CartItemRepository cartItemRepository;
     private final ProductRepository productRepository;
     private final MemberRepository memberRepository;
+    private final CampaignProductRepository campaignProductRepository;
 
     public CartService(CartItemRepository cartItemRepository,
                        ProductRepository productRepository,
-                       MemberRepository memberRepository) {
+                       MemberRepository memberRepository,
+                       CampaignProductRepository campaignProductRepository) {
         this.cartItemRepository = cartItemRepository;
         this.productRepository = productRepository;
         this.memberRepository = memberRepository;
+        this.campaignProductRepository = campaignProductRepository;
     }
 
     public void addToCart(Long memberId, Long productId, int quantity) {
@@ -53,8 +52,33 @@ public class CartService {
 
     public double getCartTotal(Long memberId) {
         return getCart(memberId).stream()
-                .mapToDouble(item -> item.getQuantity() * item.getProduct().getPrice())
+                .mapToDouble(item -> item.getQuantity() * getDiscountedUnitPrice(item.getProduct()))
                 .sum();
+    }
+
+    // Single source of truth for "what does the buyer pay per unit right now".
+    // Used by both the cart total and the cart UI so the row prices and the
+    // grand total can never disagree.
+    public double getDiscountedUnitPrice(Product product) {
+        double bestDiscount = getBestDiscountForProduct(product, java.time.LocalDate.now());
+        if (bestDiscount > 0) {
+            return product.getPrice() * (1 - bestDiscount / 100.0);
+        }
+        return product.getPrice();
+    }
+
+    private double getBestDiscountForProduct(Product product, java.time.LocalDate today) {
+        List<CampaignProduct> cps = campaignProductRepository.findByProduct(product);
+        double best = 0;
+        for (CampaignProduct cp : cps) {
+            Campaign c = cp.getCampaign();
+            if (c.isActive()
+                    && !today.isBefore(c.getStartDate())
+                    && !today.isAfter(c.getEndDate())) {
+                best = Math.max(best, cp.getEffectiveDiscount());
+            }
+        }
+        return best;
     }
 
     @Transactional

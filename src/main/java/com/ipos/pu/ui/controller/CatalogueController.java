@@ -1,6 +1,7 @@
 package com.ipos.pu.ui.controller;
 
 import com.ipos.pu.model.Product;
+import com.ipos.pu.service.AdminService;
 import com.ipos.pu.service.CartService;
 import com.ipos.pu.service.CatalogueService;
 import com.ipos.pu.ui.SceneManager;
@@ -17,6 +18,7 @@ public class CatalogueController {
 
     private final CatalogueService catalogueService;
     private final CartService cartService;
+    private final AdminService adminService;
 
     @FXML private TextField searchField;
     @FXML private TextField quantityField;
@@ -28,25 +30,41 @@ public class CatalogueController {
     @FXML private Label messageLabel;
     @FXML private Label welcomeLabel;
     @FXML private Button cartNavButton;
+    @FXML private Button campaignsNavBtn;
+    @FXML private Button reportsNavBtn;
 
     private int quantity = 1;
 
-    public CatalogueController(CatalogueService catalogueService, CartService cartService) {
+    public CatalogueController(CatalogueService catalogueService, CartService cartService,
+                               AdminService adminService) {
         this.catalogueService = catalogueService;
         this.cartService = cartService;
+        this.adminService = adminService;
     }
 
     @FXML
     public void initialize() {
         colName.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getName()));
         colBrand.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getBrand()));
-        colPrice.setCellValueFactory(d -> new SimpleStringProperty("£" + d.getValue().getPrice()));
+        colPrice.setCellValueFactory(d -> {
+            Product p = d.getValue();
+            double discount = adminService.getBestDiscount(p.getId());
+            if (discount > 0) {
+                double discounted = p.getPrice() * (1 - discount / 100.0);
+                return new SimpleStringProperty(String.format("\u00a3%.2f  (-%.0f%%)", discounted, discount));
+            }
+            return new SimpleStringProperty("\u00a3" + String.format("%.2f", p.getPrice()));
+        });
         colStock.setCellValueFactory(d -> new SimpleStringProperty(String.valueOf(d.getValue().getStockQuantity())));
         productsTable.setItems(FXCollections.observableArrayList(catalogueService.getAllProducts()));
         if (SessionManager.isLoggedIn()) {
             welcomeLabel.setText(SessionManager.getCurrentMember().getFirstName());
             int count = cartService.getCartItemCount(SessionManager.getCurrentMember().getId());
             cartNavButton.setText("My Cart" + (count > 0 ? "  (" + count + ")" : ""));
+        }
+        if (!SessionManager.isAdmin()) {
+            campaignsNavBtn.setVisible(false); campaignsNavBtn.setManaged(false);
+            reportsNavBtn.setVisible(false); reportsNavBtn.setManaged(false);
         }
     }
 
@@ -107,13 +125,18 @@ public class CatalogueController {
     }
 
     @FXML
-    private void onAdminClicked() {
-        SceneManager.switchTo("/com/ipos/pu/ui/admin.fxml");
+    private void onPromotionsClicked() {
+        SceneManager.switchTo("/com/ipos/pu/ui/promotions.fxml");
     }
 
     @FXML
     private void onCampaignsClicked() {
         SceneManager.switchTo("/com/ipos/pu/ui/campaigns.fxml");
+    }
+
+    @FXML
+    private void onReportsClicked() {
+        SceneManager.switchTo("/com/ipos/pu/ui/reports.fxml");
     }
 
     @FXML

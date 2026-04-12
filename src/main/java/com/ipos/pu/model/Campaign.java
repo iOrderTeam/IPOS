@@ -16,6 +16,7 @@ public class Campaign {
     private LocalDate endDate;
     private int hits;
     private double discountPercentage;
+    private boolean active = true;
 
     public long getId() {
         return id;
@@ -60,5 +61,12 @@ public class Campaign {
     }
     public void setHits(int hits) {
         this.hits = hits;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }
