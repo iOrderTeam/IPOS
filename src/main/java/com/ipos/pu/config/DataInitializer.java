@@ -42,24 +42,13 @@ public class DataInitializer implements CommandLineRunner {
         if (productRepository.count() > 0) return;
 
         List<Product> products = List.of(
-            // caItemId 1-5 match CA's locked stock IDs exactly — used for stock sync and sale transmission
-            product("Paracetamol 500mg",  "InfoPharma", "Box of 20 Caps. Unit cost per pack: £0.10",   0.10,  10345, 1),
-            product("Ibuprofen 200mg",    "InfoPharma", "Box of 20 Caps. Unit cost per pack: £3.20",   3.20,    400, 2),
-            product("Amoxicillin 250mg",  "InfoPharma", "Box of 10 Caps. Unit cost per pack: £8.75",   8.75,    200, 3),
-            product("Cetirizine 10mg",    "InfoPharma", "Box of 10 Caps. Unit cost per pack: £4.10",   4.10,    300, 4),
-            product("Omeprazole 20mg",    "InfoPharma", "Box of 20 caps. Unit cost per pack: £5.60",   5.60,    250, 5),
-            // remaining products are PU-only — no CA stock mapping
-            product("Aspirin",            "InfoPharma", "Box of 20 Caps. Unit cost per pack: £0.50",   0.50,  12453, null),
-            product("Analgin",            "InfoPharma", "Box of 10 Caps. Unit cost per pack: £1.20",   1.20,   4235, null),
-            product("Celebrex 100mg",     "InfoPharma", "Box of 10 Caps. Unit cost per pack: £10.00", 10.00,   3420, null),
-            product("Celebrex 200mg",     "InfoPharma", "Box of 10 caps. Unit cost per pack: £18.50", 18.50,   1450, null),
-            product("Retin-A Tretin 30g", "InfoPharma", "Box of 20 caps. Unit cost per pack: £25.00", 25.00,   2013, null),
-            product("Lipitor TB 20mg",    "InfoPharma", "Box of 30 caps. Unit cost per pack: £15.50", 15.50,   1562, null),
-            product("Claritin CR 60g",    "InfoPharma", "Box of 20 caps. Unit cost per pack: £19.50", 19.50,   2540, null),
-            product("Iodine tincture",    "InfoPharma", "Bottle of 100 ml. Unit cost per pack: £0.30",  0.30,  2134, null),
-            product("Rhynol",             "InfoPharma", "Bottle of 200 ml. Unit cost per pack: £2.50",  2.50,  1908, null),
-            product("Vitamin C",          "InfoPharma", "Box of 30 caps. Unit cost per pack: £1.20",   1.20,  3258, null),
-            product("Vitamin B12",        "InfoPharma", "Box of 30 caps. Unit cost per pack: £1.30",   1.30,  2673, null)
+            // only the 5 products the merchant stocks in CA — caItemId matches CA's locked stock IDs
+            // stock quantities are seeded as a fallback; refreshStockFromCa() overwrites them on load
+            product("Paracetamol 500mg", "InfoPharma", "Box of 20 Caps. Unit cost per pack: £0.10",  0.10, 0, 1),
+            product("Ibuprofen 200mg",   "InfoPharma", "Box of 20 Caps. Unit cost per pack: £3.20",  3.20, 0, 2),
+            product("Amoxicillin 250mg", "InfoPharma", "Box of 10 Caps. Unit cost per pack: £8.75",  8.75, 0, 3),
+            product("Cetirizine 10mg",   "InfoPharma", "Box of 10 Caps. Unit cost per pack: £4.10",  4.10, 0, 4),
+            product("Omeprazole 20mg",   "InfoPharma", "Box of 20 caps. Unit cost per pack: £5.60",  5.60, 0, 5)
         );
 
         List<Product> savedProducts = productRepository.saveAll(products);
@@ -78,51 +67,54 @@ public class DataInitializer implements CommandLineRunner {
         testMember = memberRepository.save(testMember);
 
         // Seed sample orders so order tracking and reports have data
-        Product paracetamol = savedProducts.get(0);
-        Product aspirin = savedProducts.get(1);
-        Product analgin = savedProducts.get(2);
-        Product iodine = savedProducts.get(8);
-        Product rhynol = savedProducts.get(9);
+        Product paracetamol = savedProducts.get(0); // Paracetamol 500mg
+        Product ibuprofen   = savedProducts.get(1); // Ibuprofen 200mg
+        Product amoxicillin = savedProducts.get(2); // Amoxicillin 250mg
+        Product cetirizine  = savedProducts.get(3); // Cetirizine 10mg
+        Product omeprazole  = savedProducts.get(4); // Omeprazole 20mg
 
         // Order 1 - delivered
         Order order1 = new Order();
         order1.setMember(testMember);
         order1.setStatus(OrderStatus.DELIVERED);
         order1.setPlacedAt(LocalDateTime.now().minusDays(14));
-        order1.setTotalAmount(26.50);
+        order1.setTotalAmount(36.95);
         order1.setPaymentReference("PAY-A1B2C3D4");
+        order1.setDeliveryAddress("27 Sainsbury Close, London, E1 6TJ");
         order1 = orderRepository.save(order1);
 
-        orderItemRepository.save(orderItem(order1, paracetamol, 5, paracetamol.getPrice()));
-        orderItemRepository.save(orderItem(order1, aspirin, 10, aspirin.getPrice()));
-        orderItemRepository.save(orderItem(order1, rhynol, 8, rhynol.getPrice()));
+        orderItemRepository.save(orderItem(order1, paracetamol, 5,  paracetamol.getPrice()));
+        orderItemRepository.save(orderItem(order1, ibuprofen,   8,  ibuprofen.getPrice()));
+        orderItemRepository.save(orderItem(order1, omeprazole,  2,  omeprazole.getPrice()));
 
         // Order 2 - dispatched
         Order order2 = new Order();
         order2.setMember(testMember);
         order2.setStatus(OrderStatus.DISPATCHED);
         order2.setPlacedAt(LocalDateTime.now().minusDays(5));
-        order2.setTotalAmount(38.40);
+        order2.setTotalAmount(43.25);
         order2.setPaymentReference("PAY-E5F6G7H8");
+        order2.setDeliveryAddress("27 Sainsbury Close, London, E1 6TJ");
         order2 = orderRepository.save(order2);
 
-        orderItemRepository.save(orderItem(order2, analgin, 12, analgin.getPrice()));
-        orderItemRepository.save(orderItem(order2, iodine, 20, iodine.getPrice()));
-        orderItemRepository.save(orderItem(order2, paracetamol, 30, paracetamol.getPrice()));
+        orderItemRepository.save(orderItem(order2, amoxicillin, 4, amoxicillin.getPrice()));
+        orderItemRepository.save(orderItem(order2, cetirizine,  3, cetirizine.getPrice()));
+        orderItemRepository.save(orderItem(order2, paracetamol, 10, paracetamol.getPrice()));
 
         // Order 3 - received (most recent)
         Order order3 = new Order();
         order3.setMember(testMember);
         order3.setStatus(OrderStatus.RECEIVED);
         order3.setPlacedAt(LocalDateTime.now().minusDays(1));
-        order3.setTotalAmount(15.50);
+        order3.setTotalAmount(22.30);
         order3.setPaymentReference("PAY-I9J0K1L2");
+        order3.setDeliveryAddress("27 Sainsbury Close, London, E1 6TJ");
         order3 = orderRepository.save(order3);
 
-        orderItemRepository.save(orderItem(order3, aspirin, 15, aspirin.getPrice()));
-        orderItemRepository.save(orderItem(order3, analgin, 5, analgin.getPrice()));
+        orderItemRepository.save(orderItem(order3, ibuprofen,  2, ibuprofen.getPrice()));
+        orderItemRepository.save(orderItem(order3, omeprazole, 3, omeprazole.getPrice()));
 
-        // Seed sample campaigns with products
+        // Seed sample campaigns using the 5 merchant products
         Campaign campaign1 = new Campaign();
         campaign1.setName("Spring Health Sale");
         campaign1.setDescription("Discounts on essential medicines");
@@ -134,12 +126,12 @@ public class DataInitializer implements CommandLineRunner {
         campaign1 = campaignRepository.save(campaign1);
 
         campaignProductRepository.save(campaignProduct(campaign1, paracetamol));
-        campaignProductRepository.save(campaignProduct(campaign1, aspirin));
-        campaignProductRepository.save(campaignProduct(campaign1, savedProducts.get(12))); // Vitamin C
+        campaignProductRepository.save(campaignProduct(campaign1, ibuprofen));
+        campaignProductRepository.save(campaignProduct(campaign1, cetirizine));
 
         Campaign campaign2 = new Campaign();
-        campaign2.setName("Premium Meds Promo");
-        campaign2.setDescription("Save on premium medications");
+        campaign2.setName("Prescription Essentials Promo");
+        campaign2.setDescription("Save on prescription-strength medicines");
         campaign2.setDiscountPercentage(10.0);
         campaign2.setStartDate(LocalDate.now().minusDays(2));
         campaign2.setEndDate(LocalDate.now().plusDays(18));
@@ -147,9 +139,8 @@ public class DataInitializer implements CommandLineRunner {
         campaign2.setActive(true);
         campaign2 = campaignRepository.save(campaign2);
 
-        campaignProductRepository.save(campaignProduct(campaign2, savedProducts.get(3))); // Celebrex 100mg
-        campaignProductRepository.save(campaignProduct(campaign2, savedProducts.get(6))); // Lipitor
-        campaignProductRepository.save(campaignProduct(campaign2, savedProducts.get(5))); // Retin-A
+        campaignProductRepository.save(campaignProduct(campaign2, amoxicillin));
+        campaignProductRepository.save(campaignProduct(campaign2, omeprazole));
     }
 
     private Product product(String name, String brand, String description, double price, int stock, Integer caItemId) {
