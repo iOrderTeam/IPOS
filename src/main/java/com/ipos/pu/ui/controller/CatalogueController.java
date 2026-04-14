@@ -44,6 +44,7 @@ public class CatalogueController {
 
     @FXML
     public void initialize() {
+        catalogueService.refreshStockFromCa();
         colName.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getName()));
         colBrand.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getBrand()));
         colPrice.setCellValueFactory(d -> {

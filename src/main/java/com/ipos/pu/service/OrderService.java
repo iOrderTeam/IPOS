@@ -87,13 +87,7 @@ public class OrderService {
 
         cartService.clearCart(memberId);
 
-        for (CartItem cartItem : cartItems) {
-            iposCaService.deductStock(
-                    cartItem.getProduct().getId(),
-                    cartItem.getQuantity());
-        }
-
-        // Propagate the full sale (with delivery address) to IPOS-CA.
+        // transmit full sale to CA — CA deducts stock on its side
         iposCaService.passSaleToCa(savedOrder, savedItems);
 
         // Increment per-product campaign counters (CAMP_X_1 etc.)
