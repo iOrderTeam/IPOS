@@ -49,8 +49,19 @@ public class PromotionsController {
     @FXML
     public void initialize() {
         colCampName.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getName()));
-        colCampDiscount.setCellValueFactory(d -> new SimpleStringProperty(
-                d.getValue().getDiscountPercentage() + "% off"));
+        colCampDiscount.setCellValueFactory(d -> {
+            Campaign c = d.getValue();
+            List<CampaignProduct> cps = adminService.getCampaignProducts(c.getId());
+            if (cps.isEmpty()) {
+                return new SimpleStringProperty(c.getDiscountPercentage() + "% off");
+            }
+            double min = cps.stream().mapToDouble(CampaignProduct::getEffectiveDiscount).min().orElse(0);
+            double max = cps.stream().mapToDouble(CampaignProduct::getEffectiveDiscount).max().orElse(0);
+            String disc = min == max
+                    ? String.format("%.0f%% off", max)
+                    : String.format("%.0f-%.0f%% off", min, max);
+            return new SimpleStringProperty(disc);
+        });
         colCampEnd.setCellValueFactory(d -> new SimpleStringProperty(
                 "Ends: " + d.getValue().getEndDate().toString()));
         colCampDesc.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getDescription()));
@@ -74,9 +85,8 @@ public class PromotionsController {
                 adminService.incrementCampaignHits(newVal.getId());
                 List<CampaignProduct> products = adminService.getCampaignProducts(newVal.getId());
                 productsTable.setItems(FXCollections.observableArrayList(products));
-                campaignDetailLabel.setText(newVal.getName() + " — "
-                        + newVal.getDiscountPercentage() + "% discount until "
-                        + newVal.getEndDate());
+                campaignDetailLabel.setText(newVal.getName() + " — active until "
+                        + newVal.getEndDate() + ". Click a product below to add to cart.");
             } else {
                 productsTable.setItems(FXCollections.emptyObservableList());
                 campaignDetailLabel.setText("Select a promotion above to view discounted products.");

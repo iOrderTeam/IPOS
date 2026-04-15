@@ -82,6 +82,9 @@
                         style="-fx-pref-width: 90; -fx-pref-height: 32; -fx-background-color: #1e1e2e; -fx-text-fill: white; -fx-background-radius: 6; -fx-cursor: hand;"/>
                 <Button text="Clear" onAction="#onClearClicked"
                         style="-fx-pref-width: 70; -fx-pref-height: 32; -fx-background-color: #e0e0e8; -fx-text-fill: #444; -fx-background-radius: 6; -fx-cursor: hand;"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button fx:id="refreshButton" text="Refresh Stock" onAction="#onRefreshClicked"
+                        style="-fx-pref-height: 32; -fx-background-color: #2e7d32; -fx-text-fill: white; -fx-background-radius: 6; -fx-cursor: hand; -fx-padding: 0 14;"/>
             </HBox>
 
             <!-- Table card -->

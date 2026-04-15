@@ -30,6 +30,7 @@ public class CatalogueController {
     @FXML private Label messageLabel;
     @FXML private Label welcomeLabel;
     @FXML private Button cartNavButton;
+    @FXML private Button refreshButton;
     @FXML private Button campaignsNavBtn;
     @FXML private Button reportsNavBtn;
 
@@ -67,6 +68,19 @@ public class CatalogueController {
             campaignsNavBtn.setVisible(false); campaignsNavBtn.setManaged(false);
             reportsNavBtn.setVisible(false); reportsNavBtn.setManaged(false);
         }
+    }
+
+    @FXML
+    private void onRefreshClicked() {
+        refreshButton.setDisable(true);
+        refreshButton.setText("Refreshing...");
+        catalogueService.refreshStockFromCa();
+        productsTable.setItems(FXCollections.observableArrayList(catalogueService.getAllProducts()));
+        productsTable.refresh();
+        refreshButton.setText("Refresh Stock");
+        refreshButton.setDisable(false);
+        messageLabel.setText("Stock updated.");
+        messageLabel.setStyle("-fx-text-fill: #27ae60;");
     }
 
     @FXML

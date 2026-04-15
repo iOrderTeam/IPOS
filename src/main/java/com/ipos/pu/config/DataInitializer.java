@@ -41,109 +41,167 @@ public class DataInitializer implements CommandLineRunner {
     public void run(String... args) {
         if (productRepository.count() > 0) return;
 
-        List<Product> products = List.of(
-            // only the 5 products the merchant stocks in CA — caItemId matches CA's locked stock IDs
-            // stock quantities are seeded as a fallback; refreshStockFromCa() overwrites them on load
-            product("Paracetamol 500mg", "InfoPharma", "Box of 20 Caps. Unit cost per pack: £0.10",  0.10, 0, 1),
-            product("Ibuprofen 200mg",   "InfoPharma", "Box of 20 Caps. Unit cost per pack: £3.20",  3.20, 0, 2),
-            product("Amoxicillin 250mg", "InfoPharma", "Box of 10 Caps. Unit cost per pack: £8.75",  8.75, 0, 3),
-            product("Cetirizine 10mg",   "InfoPharma", "Box of 10 Caps. Unit cost per pack: £4.10",  4.10, 0, 4),
-            product("Omeprazole 20mg",   "InfoPharma", "Box of 20 caps. Unit cost per pack: £5.60",  5.60, 0, 5)
-        );
+        // ── Products ────────────────────────────────────────────────────────────
+        // caItemId maps to CA's stock IDs. All 14 products from scenarios.md.
+        // Stock quantities seeded as 0 — refreshStockFromCa() overwrites on load.
+        List<Product> products = productRepository.saveAll(List.of(
+            product("Paracetamol",          "InfoPharma", "Box of 20 Caps",   0.20,  121, 1),
+            product("Aspirin",              "InfoPharma", "Box of 20 Caps",   1.00,  201, 2),
+            product("Analgin",              "InfoPharma", "Box of 10 Caps",   2.40,   25, 3),
+            product("Celebrex 100mg",       "InfoPharma", "Box of 10 Caps",  20.00,   43, 4),
+            product("Celebrex 200mg",       "InfoPharma", "Box of 10 Caps",  37.00,   35, 5),
+            product("Retin-A Tretin 30g",   "InfoPharma", "Box of 20 Caps",  50.00,   28, 6),
+            product("Lipitor TB 20mg",      "InfoPharma", "Box of 30 Caps",  31.00,   10, 7),
+            product("Claritin CR 60g",      "InfoPharma", "Box of 20 Caps",  39.00,   21, 8),
+            product("Iodine Tincture",      "InfoPharma", "Bottle of 100ml",  0.60,   35, 9),
+            product("Rhynol",               "InfoPharma", "Bottle of 200ml",  5.00,   14, 10),
+            product("Ospen",                "InfoPharma", "Box of 20 Caps",  21.00,   78, 11),
+            product("Amopen",               "InfoPharma", "Box of 30 Caps",  30.00,   90, 12),
+            product("Vitamin C",            "InfoPharma", "Box of 30 Caps",   2.40,   22, 13),
+            product("Vitamin B12",          "InfoPharma", "Box of 30 Caps",   2.60,   43, 14)
+        ));
 
-        List<Product> savedProducts = productRepository.saveAll(products);
+        // convenience references by position
+        Product paracetamol  = products.get(0);
+        Product aspirin      = products.get(1);
+        Product analgin      = products.get(2);
+        Product celebrex100  = products.get(3);
+        Product celebrex200  = products.get(4);
+        Product retinA       = products.get(5);
+        Product lipitor      = products.get(6);
+        Product claritin     = products.get(7);
+        Product iodine       = products.get(8);
+        Product rhynol       = products.get(9);
+        Product ospen        = products.get(10);
+        Product amopen       = products.get(11);
+        Product vitaminC     = products.get(12);
+        Product vitaminB12   = products.get(13);
 
-        // Seed a test member
-        Member testMember = new Member();
-        testMember.setEmail("admin@ipospu.com");
-        testMember.setPassword(passwordEncoder.encode("admin123"));
-        testMember.setFirstName("Test");
-        testMember.setLastName("User");
-        testMember.setMemberType(MemberType.NON_COMMERCIAL);
-        testMember.setStatus(MemberStatus.ACTIVE);
-        testMember.setPasswordChangeRequired(false);
-        testMember.setAdmin(true);
-        testMember.setOrderCounter(3);
-        testMember = memberRepository.save(testMember);
+        // ── Admin accounts ───────────────────────────────────────────────────────
+        // sysdba / masterkey — matches scenarios.md exactly
+        Member sysdba = new Member();
+        sysdba.setEmail("sysdba");
+        sysdba.setPassword(passwordEncoder.encode("masterkey"));
+        sysdba.setFirstName("System");
+        sysdba.setLastName("Admin");
+        sysdba.setMemberType(MemberType.NON_COMMERCIAL);
+        sysdba.setStatus(MemberStatus.ACTIVE);
+        sysdba.setPasswordChangeRequired(false);
+        sysdba.setAdmin(true);
+        sysdba.setOrderCounter(0);
+        memberRepository.save(sysdba);
 
-        // Seed sample orders so order tracking and reports have data
-        Product paracetamol = savedProducts.get(0); // Paracetamol 500mg
-        Product ibuprofen   = savedProducts.get(1); // Ibuprofen 200mg
-        Product amoxicillin = savedProducts.get(2); // Amoxicillin 250mg
-        Product cetirizine  = savedProducts.get(3); // Cetirizine 10mg
-        Product omeprazole  = savedProducts.get(4); // Omeprazole 20mg
+        // manager / GetPU_it_done
+        Member manager = new Member();
+        manager.setEmail("manager");
+        manager.setPassword(passwordEncoder.encode("GetPU_it_done"));
+        manager.setFirstName("PU");
+        manager.setLastName("Manager");
+        manager.setMemberType(MemberType.NON_COMMERCIAL);
+        manager.setStatus(MemberStatus.ACTIVE);
+        manager.setPasswordChangeRequired(false);
+        manager.setAdmin(true);
+        manager.setOrderCounter(0);
+        memberRepository.save(manager);
 
-        // Order 1 - delivered
-        Order order1 = new Order();
-        order1.setMember(testMember);
-        order1.setStatus(OrderStatus.DELIVERED);
-        order1.setPlacedAt(LocalDateTime.now().minusDays(14));
-        order1.setTotalAmount(36.95);
-        order1.setPaymentReference("PAY-A1B2C3D4");
-        order1.setDeliveryAddress("27 Sainsbury Close, London, E1 6TJ");
-        order1 = orderRepository.save(order1);
+        // ── Non-commercial members ───────────────────────────────────────────────
+        // PU0001 — orderCounter=8 so their next purchase is 9th, one after is 10th (loyalty discount)
+        Member pu0001 = new Member();
+        pu0001.setEmail("cool@example.com");
+        pu0001.setPassword(passwordEncoder.encode("12ss_56_SS"));
+        pu0001.setFirstName("Peter");
+        pu0001.setLastName("Popov");
+        pu0001.setMemberType(MemberType.NON_COMMERCIAL);
+        pu0001.setStatus(MemberStatus.ACTIVE);
+        pu0001.setPasswordChangeRequired(false);
+        pu0001.setAdmin(false);
+        pu0001.setOrderCounter(8); // 8 past purchases — 10th order gets loyalty discount
+        pu0001 = memberRepository.save(pu0001);
 
-        orderItemRepository.save(orderItem(order1, paracetamol, 5,  paracetamol.getPrice()));
-        orderItemRepository.save(orderItem(order1, ibuprofen,   8,  ibuprofen.getPrice()));
-        orderItemRepository.save(orderItem(order1, omeprazole,  2,  omeprazole.getPrice()));
+        // PU0002
+        Member pu0002 = new Member();
+        pu0002.setEmail("cool1@example.com");
+        pu0002.setPassword(passwordEncoder.encode("34pp_78_LL"));
+        pu0002.setFirstName("Jane");
+        pu0002.setLastName("Smith");
+        pu0002.setMemberType(MemberType.NON_COMMERCIAL);
+        pu0002.setStatus(MemberStatus.ACTIVE);
+        pu0002.setPasswordChangeRequired(false);
+        pu0002.setAdmin(false);
+        pu0002.setOrderCounter(0);
+        memberRepository.save(pu0002);
 
-        // Order 2 - dispatched
-        Order order2 = new Order();
-        order2.setMember(testMember);
-        order2.setStatus(OrderStatus.DISPATCHED);
-        order2.setPlacedAt(LocalDateTime.now().minusDays(5));
-        order2.setTotalAmount(43.25);
-        order2.setPaymentReference("PAY-E5F6G7H8");
-        order2.setDeliveryAddress("27 Sainsbury Close, London, E1 6TJ");
-        order2 = orderRepository.save(order2);
+        // ── Commercial member ────────────────────────────────────────────────────
+        // PU0003 — PENDING status, awaiting SA approval
+        Member pu0003 = new Member();
+        pu0003.setEmail("pondPharma@example.com");
+        pu0003.setPassword(passwordEncoder.encode("Pond1234!"));
+        pu0003.setFirstName("Pond");
+        pu0003.setLastName("Pharmacy");
+        pu0003.setMemberType(MemberType.COMMERCIAL);
+        pu0003.setStatus(MemberStatus.PENDING);
+        pu0003.setPasswordChangeRequired(false);
+        pu0003.setAdmin(false);
+        pu0003.setOrderCounter(0);
+        pu0003.setCompanyName("Pond Pharmacy");
+        pu0003.setCompanyRegistrationNumber("UK10003429CompH");
+        pu0003.setBusinessType("Pharmacy");
+        pu0003.setAddress("Chislehurst\n25, High Street\nBR7 5BN");
+        pu0003.setDirectorDetails("Director of Pond Pharmacy Ltd");
+        memberRepository.save(pu0003);
 
-        orderItemRepository.save(orderItem(order2, amoxicillin, 4, amoxicillin.getPrice()));
-        orderItemRepository.save(orderItem(order2, cetirizine,  3, cetirizine.getPrice()));
-        orderItemRepository.save(orderItem(order2, paracetamol, 10, paracetamol.getPrice()));
+        // ── Past orders for PU0001 ───────────────────────────────────────────────
+        // 8 historical orders to match the orderCounter — gives reports real data
+        // and means PU0001's next order in the demo is #9, the one after is #10 (discount)
+        for (int i = 1; i <= 8; i++) {
+            Order o = new Order();
+            o.setMember(pu0001);
+            o.setStatus(OrderStatus.DELIVERED);
+            o.setPlacedAt(LocalDateTime.of(2026, 3, i, 10, 0));
+            o.setTotalAmount(i % 2 == 0 ? 21.00 : 5.00);
+            o.setPaymentReference("PAY-HIST-00" + i);
+            o.setDeliveryAddress("1 Liverpool Street, London EC2V 8NS");
+            o = orderRepository.save(o);
+            // alternate products to make reports look varied
+            Product p = i % 2 == 0 ? ospen : aspirin;
+            orderItemRepository.save(orderItem(o, p, 1, p.getPrice()));
+        }
 
-        // Order 3 - received (most recent)
-        Order order3 = new Order();
-        order3.setMember(testMember);
-        order3.setStatus(OrderStatus.RECEIVED);
-        order3.setPlacedAt(LocalDateTime.now().minusDays(1));
-        order3.setTotalAmount(22.30);
-        order3.setPaymentReference("PAY-I9J0K1L2");
-        order3.setDeliveryAddress("27 Sainsbury Close, London, E1 6TJ");
-        order3 = orderRepository.save(order3);
+        // ── Campaigns from scenarios.md ──────────────────────────────────────────
+        // March Promotion — scenario 17
+        // Per-product discounts stored as discountOverride on CampaignProduct
+        Campaign marchPromo = new Campaign();
+        marchPromo.setName("March Promotion");
+        marchPromo.setDescription("Spring discounts on selected medicines");
+        marchPromo.setDiscountPercentage(0); // default unused — each product has its own rate
+        marchPromo.setStartDate(LocalDate.of(2026, 3, 15));
+        marchPromo.setEndDate(LocalDate.of(2026, 4, 20));
+        marchPromo.setHits(0);
+        marchPromo.setActive(true);
+        marchPromo = campaignRepository.save(marchPromo);
 
-        orderItemRepository.save(orderItem(order3, ibuprofen,  2, ibuprofen.getPrice()));
-        orderItemRepository.save(orderItem(order3, omeprazole, 3, omeprazole.getPrice()));
+        campaignProductRepository.save(campaignProduct(marchPromo, aspirin,     5.0));
+        campaignProductRepository.save(campaignProduct(marchPromo, analgin,    10.0));
+        campaignProductRepository.save(campaignProduct(marchPromo, celebrex100,10.0));
+        campaignProductRepository.save(campaignProduct(marchPromo, retinA,     20.0));
 
-        // Seed sample campaigns using the 5 merchant products
-        Campaign campaign1 = new Campaign();
-        campaign1.setName("Spring Health Sale");
-        campaign1.setDescription("Discounts on essential medicines");
-        campaign1.setDiscountPercentage(15.0);
-        campaign1.setStartDate(LocalDate.now().minusDays(5));
-        campaign1.setEndDate(LocalDate.now().plusDays(25));
-        campaign1.setHits(0);
-        campaign1.setActive(true);
-        campaign1 = campaignRepository.save(campaign1);
+        // April Promotion — scenario 18 (already expired but seeded for history)
+        Campaign aprilPromo = new Campaign();
+        aprilPromo.setName("April Promotion");
+        aprilPromo.setDescription("April discounts on selected medicines");
+        aprilPromo.setDiscountPercentage(0);
+        aprilPromo.setStartDate(LocalDate.of(2026, 4, 5));
+        aprilPromo.setEndDate(LocalDate.of(2026, 4, 10));
+        aprilPromo.setHits(0);
+        aprilPromo.setActive(true);
+        aprilPromo = campaignRepository.save(aprilPromo);
 
-        campaignProductRepository.save(campaignProduct(campaign1, paracetamol));
-        campaignProductRepository.save(campaignProduct(campaign1, ibuprofen));
-        campaignProductRepository.save(campaignProduct(campaign1, cetirizine));
-
-        Campaign campaign2 = new Campaign();
-        campaign2.setName("Prescription Essentials Promo");
-        campaign2.setDescription("Save on prescription-strength medicines");
-        campaign2.setDiscountPercentage(10.0);
-        campaign2.setStartDate(LocalDate.now().minusDays(2));
-        campaign2.setEndDate(LocalDate.now().plusDays(18));
-        campaign2.setHits(0);
-        campaign2.setActive(true);
-        campaign2 = campaignRepository.save(campaign2);
-
-        campaignProductRepository.save(campaignProduct(campaign2, amoxicillin));
-        campaignProductRepository.save(campaignProduct(campaign2, omeprazole));
+        campaignProductRepository.save(campaignProduct(aprilPromo, ospen,    20.0));
+        campaignProductRepository.save(campaignProduct(aprilPromo, vitaminC, 10.0));
     }
 
-    private Product product(String name, String brand, String description, double price, int stock, Integer caItemId) {
+    private Product product(String name, String brand, String description,
+                            double price, int stock, Integer caItemId) {
         Product p = new Product();
         p.setName(name);
         p.setBrand(brand);
@@ -154,11 +212,13 @@ public class DataInitializer implements CommandLineRunner {
         return p;
     }
 
-    private CampaignProduct campaignProduct(Campaign campaign, Product product) {
+    private CampaignProduct campaignProduct(Campaign campaign, Product product, double discountOverride) {
         CampaignProduct cp = new CampaignProduct();
         cp.setCampaign(campaign);
         cp.setProduct(product);
         cp.setHits(0);
+        cp.setPurchased(0);
+        cp.setDiscountOverride(discountOverride);
         return cp;
     }
 

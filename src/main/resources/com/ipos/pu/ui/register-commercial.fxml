@@ -18,7 +18,9 @@
     </VBox>
 
     <!-- Right form panel -->
-    <VBox alignment="CENTER" HBox.hgrow="ALWAYS" spacing="8"
+    <ScrollPane fitToWidth="true" HBox.hgrow="ALWAYS" hbarPolicy="NEVER"
+                style="-fx-background-color: #f0f2f5; -fx-background: #f0f2f5;">
+    <VBox alignment="CENTER" spacing="8"
           style="-fx-background-color: #f0f2f5; -fx-padding: 30 80;">
         <Label text="Commercial Registration" style="-fx-font-size: 26px; -fx-font-weight: bold; -fx-text-fill: #1e1e2e;"/>
         <Label text="Register your business" style="-fx-font-size: 13px; -fx-text-fill: #888; -fx-padding: 0 0 4 0;"/>
@@ -27,24 +29,21 @@
         <TextField fx:id="emailField" promptText="business@example.com"
                    style="-fx-pref-width: 340; -fx-pref-height: 36; -fx-background-color: #ffffff; -fx-border-color: #d0d0de; -fx-border-radius: 6; -fx-background-radius: 6; -fx-padding: 6 12; -fx-font-size: 13px;"/>
 
-        <Label text="Company Registration Number" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #555;"/>
-        <TextField fx:id="companyRegField" promptText="e.g. 12345678"
+        <Label text="Company Name" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #555;"/>
+        <TextField fx:id="companyNameField"
                    style="-fx-pref-width: 340; -fx-pref-height: 36; -fx-background-color: #ffffff; -fx-border-color: #d0d0de; -fx-border-radius: 6; -fx-background-radius: 6; -fx-padding: 6 12; -fx-font-size: 13px;"/>
 
-        <Label text="Director Details" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #555;"/>
-        <TextField fx:id="directorField" promptText="Director full name"
+        <Label text="Companies House Registration Number" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #555;"/>
+        <TextField fx:id="companyRegField"
                    style="-fx-pref-width: 340; -fx-pref-height: 36; -fx-background-color: #ffffff; -fx-border-color: #d0d0de; -fx-border-radius: 6; -fx-background-radius: 6; -fx-padding: 6 12; -fx-font-size: 13px;"/>
 
-        <Label text="Business Type" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #555;"/>
-        <TextField fx:id="businessTypeField" promptText="e.g. Pharmacy, Retail"
-                   style="-fx-pref-width: 340; -fx-pref-height: 36; -fx-background-color: #ffffff; -fx-border-color: #d0d0de; -fx-border-radius: 6; -fx-background-radius: 6; -fx-padding: 6 12; -fx-font-size: 13px;"/>
+        <Label text="Business Address" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #555;"/>
+        <TextArea fx:id="addressField" promptText="Street address&#10;City&#10;Postcode"
+                  style="-fx-pref-width: 340; -fx-pref-height: 80; -fx-background-color: #ffffff; -fx-border-color: #d0d0de; -fx-border-radius: 6; -fx-background-radius: 6; -fx-padding: 6 12; -fx-font-size: 13px;"
+                  wrapText="true"/>
 
-        <Label text="Address" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #555;"/>
-        <TextField fx:id="addressField" promptText="Business address"
-                   style="-fx-pref-width: 340; -fx-pref-height: 36; -fx-background-color: #ffffff; -fx-border-color: #d0d0de; -fx-border-radius: 6; -fx-background-radius: 6; -fx-padding: 6 12; -fx-font-size: 13px;"/>
-
-        <Label fx:id="errorLabel" style="-fx-text-fill: #c0392b; -fx-font-size: 12px;"/>
-        <Label fx:id="successLabel" style="-fx-text-fill: #27ae60; -fx-font-size: 12px;"/>
+        <Label fx:id="errorLabel" style="-fx-text-fill: #c0392b; -fx-font-size: 12px;" wrapText="true" maxWidth="340"/>
+        <Label fx:id="successLabel" style="-fx-text-fill: #27ae60; -fx-font-size: 12px;" wrapText="true" maxWidth="340"/>
 
         <Button text="Submit Application" onAction="#onRegisterClicked"
                 style="-fx-pref-width: 340; -fx-pref-height: 40; -fx-background-color: #1e1e2e; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold; -fx-background-radius: 6; -fx-cursor: hand;"/>
@@ -54,4 +53,5 @@
                     style="-fx-background-color: transparent; -fx-text-fill: #1e1e2e; -fx-font-size: 12px; -fx-font-weight: bold; -fx-cursor: hand; -fx-padding: 0;"/>
         </HBox>
     </VBox>
+    </ScrollPane>
 </HBox>

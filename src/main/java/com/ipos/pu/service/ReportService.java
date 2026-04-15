@@ -156,15 +156,29 @@ public class ReportService {
 
         List<Map<String, Object>> counters = new ArrayList<>();
 
+        List<CampaignProduct> campaignProducts = campaignProductRepository.findByCampaign(campaign);
+
+        int campaignTotalPurchases = 0;
+        for (CampaignProduct cp : campaignProducts) {
+            campaignTotalPurchases += cp.getPurchased();
+        }
+
         Map<String, Object> campaignCounter = new LinkedHashMap<>();
         campaignCounter.put("counterId", campaign.getName());
         campaignCounter.put("counterDescription", "Campaign hits");
-        campaignCounter.put("hitsCount", campaign.getHits());
-        campaignCounter.put("purchases", "N/A");
-        campaignCounter.put("conversionRate", "N/A");
+        int campaignHits = campaign.getHits();
+        campaignCounter.put("hitsCount", campaignHits);
+        campaignCounter.put("purchases", campaignTotalPurchases);
+        if (campaignHits > 0) {
+            double ratio = (double) campaignTotalPurchases / campaignHits;
+            campaignCounter.put("conversionRate",
+                    campaignTotalPurchases + "/" + campaignHits + " = " + String.format("%.2f", ratio)
+                            + " (" + String.format("%.1f", ratio * 100) + "%)");
+        } else {
+            campaignCounter.put("conversionRate", "0/0 = 0.00 (0.0%)");
+        }
         counters.add(campaignCounter);
 
-        List<CampaignProduct> campaignProducts = campaignProductRepository.findByCampaign(campaign);
         LocalDateTime campStart = campaign.getStartDate().atStartOfDay();
         LocalDateTime campEnd = campaign.getEndDate().atTime(LocalTime.MAX);
         List<Order> campaignOrders = orderRepository.findByPlacedAtBetween(campStart, campEnd);

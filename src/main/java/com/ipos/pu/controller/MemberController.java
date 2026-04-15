@@ -37,6 +37,7 @@ public class MemberController {
         try {
             Member member = memberService.registerCommercial(
                     request.getEmail(),
+                    request.getCompanyName(),
                     request.getCompanyRegistrationNumber(),
                     request.getDirectorDetails(),
                     request.getBusinessType(),

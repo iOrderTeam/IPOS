@@ -2,6 +2,7 @@ package com.ipos.pu.dto;
 
 public class CommercialRegistrationRequest {
     private String email;
+    private String companyName;
     private String companyRegistrationNumber;
     private String directorDetails;
     private String businessType;
@@ -9,6 +10,9 @@ public class CommercialRegistrationRequest {
 
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
+
+    public String getCompanyName() { return companyName; }
+    public void setCompanyName(String companyName) { this.companyName = companyName; }
 
     public String getCompanyRegistrationNumber() { return companyRegistrationNumber; }
     public void setCompanyRegistrationNumber(String companyRegistrationNumber) { this.companyRegistrationNumber = companyRegistrationNumber; }

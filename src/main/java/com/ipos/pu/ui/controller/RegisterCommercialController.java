@@ -4,6 +4,7 @@ import com.ipos.pu.service.MemberService;
 import com.ipos.pu.ui.SceneManager;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import org.springframework.stereotype.Component;
 
@@ -13,10 +14,9 @@ public class RegisterCommercialController {
     private final MemberService memberService;
 
     @FXML private TextField emailField;
+    @FXML private TextField companyNameField;
     @FXML private TextField companyRegField;
-    @FXML private TextField directorField;
-    @FXML private TextField businessTypeField;
-    @FXML private TextField addressField;
+    @FXML private TextArea addressField;
     @FXML private Label errorLabel;
     @FXML private Label successLabel;
 
@@ -27,26 +27,23 @@ public class RegisterCommercialController {
     @FXML
     private void onRegisterClicked() {
         String email = emailField.getText().trim();
+        String companyName = companyNameField.getText().trim();
         String companyReg = companyRegField.getText().trim();
-        String director = directorField.getText().trim();
-        String businessType = businessTypeField.getText().trim();
         String address = addressField.getText().trim();
 
-        if (email.isEmpty() || companyReg.isEmpty() || director.isEmpty()
-                || businessType.isEmpty() || address.isEmpty()) {
+        if (email.isEmpty() || companyName.isEmpty() || companyReg.isEmpty() || address.isEmpty()) {
             errorLabel.setText("All fields are required.");
             successLabel.setText("");
             return;
         }
 
         try {
-            memberService.registerCommercial(email, companyReg, director, businessType, address);
+            memberService.registerCommercial(email, companyName, companyReg, companyName, "Pharmacy", address);
             successLabel.setText("Application submitted! You will be notified once approved.");
             errorLabel.setText("");
             emailField.clear();
+            companyNameField.clear();
             companyRegField.clear();
-            directorField.clear();
-            businessTypeField.clear();
             addressField.clear();
         } catch (Exception e) {
             errorLabel.setText(e.getMessage());

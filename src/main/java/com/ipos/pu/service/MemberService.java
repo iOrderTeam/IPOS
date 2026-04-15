@@ -24,10 +24,9 @@ public class MemberService {
     private static final Pattern EMAIL_PATTERN =
             Pattern.compile("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$");
 
-    // UK Companies House number: exactly 8 characters, digits or uppercase letters.
-    // Covers plain numeric (e.g. 12345678), Scotland (SC123456), NI (NI123456), LLPs (OC123456), etc.
+    // UK Companies House number: 6-20 alphanumeric characters.
     private static final Pattern COMPANIES_HOUSE_PATTERN =
-            Pattern.compile("^[A-Z0-9]{8}$");
+            Pattern.compile("^[A-Z0-9]{6,20}$");
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
@@ -75,7 +74,7 @@ public class MemberService {
     }
 
     // UC2 - Register a commercial member (pending approval)
-    public Member registerCommercial(String email, String companyRegistrationNumber,
+    public Member registerCommercial(String email, String companyName, String companyRegistrationNumber,
                                      String directorDetails, String businessType, String address) {
         validateCommercialApplication(email, companyRegistrationNumber, directorDetails, businessType, address);
 
@@ -90,14 +89,85 @@ public class MemberService {
         member.setStatus(MemberStatus.PENDING);
         member.setPasswordChangeRequired(false);
         member.setOrderCounter(0);
+        member.setCompanyName(companyName);
         member.setCompanyRegistrationNumber(companyRegistrationNumber);
         member.setDirectorDetails(directorDetails);
         member.setBusinessType(businessType);
         member.setAddress(address);
 
         Member saved = memberRepository.save(member);
-        iposSaService.submitCommercialApplication(saved);
+        try {
+            iposSaService.submitCommercialApplication(saved);
+        } catch (RuntimeException e) {
+            memberRepository.delete(saved);
+            throw e;
+        }
         return saved;
+    }
+
+    public void onCommercialApplicationApprovedFromSa(Long memberId, String saEmailBody) {
+        if (saEmailBody == null || saEmailBody.isBlank()) {
+            throw new IllegalArgumentException("Approval email body is required.");
+        }
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("Member not found."));
+        if (member.getMemberType() != MemberType.COMMERCIAL) {
+            throw new IllegalStateException("Member is not commercial.");
+        }
+        if (member.getStatus() == MemberStatus.ACTIVE
+                && member.getPassword() != null
+                && !member.getPassword().isEmpty()) {
+            return;
+        }
+        String firstLine = contactNameFromDirector(member.getDirectorDetails());
+        member.setFirstName(firstLine);
+        String temp = generateTemporaryPassword();
+        member.setPassword(passwordEncoder.encode(temp));
+        member.setStatus(MemberStatus.ACTIVE);
+        member.setPasswordChangeRequired(true);
+        memberRepository.save(member);
+
+        emailService.sendEmail(
+                member.getEmail(),
+                "InfoPharma \u2014 commercial membership approved",
+                saEmailBody);
+        emailService.sendEmail(
+                member.getEmail(),
+                "IPOS-PU \u2014 portal login",
+                "Your temporary password for the IPOS-PU portal is:\n\n"
+                        + temp
+                        + "\n\nPlease log in and change your password immediately.");
+    }
+
+    public void onCommercialApplicationRejectedFromSa(Long memberId, String rejectionReason) {
+        if (rejectionReason == null || rejectionReason.isBlank()) {
+            throw new IllegalArgumentException("Rejection reason is required.");
+        }
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("Member not found."));
+        if (member.getMemberType() != MemberType.COMMERCIAL) {
+            throw new IllegalStateException("Member is not commercial.");
+        }
+        if (member.getStatus() == MemberStatus.INACTIVE) {
+            return;
+        }
+        member.setStatus(MemberStatus.INACTIVE);
+        memberRepository.save(member);
+
+        emailService.sendEmail(
+                member.getEmail(),
+                "Commercial membership application",
+                "We regret to inform you that your commercial membership application could not be approved at this time.\n\n"
+                        + "Reason:\n"
+                        + rejectionReason.trim());
+    }
+
+    private static String contactNameFromDirector(String directorDetails) {
+        if (directorDetails == null || directorDetails.isBlank()) {
+            return "Member";
+        }
+        String firstLine = directorDetails.trim().split("\\R", 2)[0].trim();
+        return firstLine.isEmpty() ? "Member" : firstLine;
     }
 
     // UC6 - Login
@@ -157,18 +227,7 @@ public class MemberService {
         }
         if (!COMPANIES_HOUSE_PATTERN.matcher(companyRegistrationNumber.toUpperCase()).matches()) {
             throw new IllegalArgumentException(
-                    "Companies House number must be 8 characters (digits or letters), e.g. 12345678 or SC123456.");
-        }
-
-        if (directorDetails == null || directorDetails.isBlank()) {
-            throw new IllegalArgumentException("Company director details are required.");
-        }
-        if (directorDetails.trim().length() < 3) {
-            throw new IllegalArgumentException("Company director details look too short.");
-        }
-
-        if (businessType == null || businessType.isBlank()) {
-            throw new IllegalArgumentException("Type of business is required.");
+                    "Companies House number must be 6-20 alphanumeric characters, e.g. 12345678 or SC123456.");
         }
 
         if (address == null || address.isBlank()) {

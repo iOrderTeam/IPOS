@@ -119,8 +119,9 @@
                 <Label text="Products in Selected Campaign:" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #1e1e2e;"/>
                 <TableView fx:id="productsTable" prefHeight="280" minHeight="240">
                     <columns>
-                        <TableColumn fx:id="colProdName" text="Product" prefWidth="200"/>
-                        <TableColumn fx:id="colProdPrice" text="Price" prefWidth="100"/>
+                        <TableColumn fx:id="colProdName" text="Product" prefWidth="180"/>
+                        <TableColumn fx:id="colProdPrice" text="Price" prefWidth="80"/>
+                        <TableColumn fx:id="colProdDiscount" text="Discount %" prefWidth="100"/>
                         <TableColumn fx:id="colProdHits" text="Product Hits" prefWidth="100"/>
                     </columns>
                 </TableView>
@@ -128,6 +129,8 @@
                 <HBox spacing="10" alignment="CENTER_LEFT">
                     <ComboBox fx:id="productCombo" promptText="Select product to add"
                               style="-fx-pref-width: 250; -fx-pref-height: 34;"/>
+                    <TextField fx:id="productDiscountField" promptText="Discount %"
+                               style="-fx-pref-width: 90; -fx-pref-height: 34; -fx-background-color: #f5f5fa; -fx-border-color: #e0e0e8; -fx-border-radius: 6; -fx-background-radius: 6; -fx-padding: 6 10;"/>
                     <Button text="Add Product" onAction="#onAddProductClicked"
                             style="-fx-pref-width: 120; -fx-pref-height: 34; -fx-background-color: #1e1e2e; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 6; -fx-cursor: hand;"/>
                     <Button text="Remove Product" onAction="#onRemoveProductClicked"

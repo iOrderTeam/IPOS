@@ -36,9 +36,11 @@ public class CampaignController {
 
     // Product management
     @FXML private ComboBox<Product> productCombo;
+    @FXML private TextField productDiscountField;
     @FXML private TableView<CampaignProduct> productsTable;
     @FXML private TableColumn<CampaignProduct, String> colProdName;
     @FXML private TableColumn<CampaignProduct, String> colProdPrice;
+    @FXML private TableColumn<CampaignProduct, String> colProdDiscount;
     @FXML private TableColumn<CampaignProduct, String> colProdHits;
 
     public CampaignController(AdminService adminService) {
@@ -57,6 +59,8 @@ public class CampaignController {
         colProdName.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getProduct().getName()));
         colProdPrice.setCellValueFactory(d -> new SimpleStringProperty(
                 "\u00a3" + String.format("%.2f", d.getValue().getProduct().getPrice())));
+        colProdDiscount.setCellValueFactory(d -> new SimpleStringProperty(
+                String.format("%.0f%%", d.getValue().getEffectiveDiscount())));
         colProdHits.setCellValueFactory(d -> new SimpleStringProperty(String.valueOf(d.getValue().getHits())));
 
         campaignsTable.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
@@ -194,7 +198,15 @@ public class CampaignController {
             return;
         }
         try {
-            adminService.addProductToCampaign(selected.getId(), product.getId());
+            Double discountOverride = null;
+            String discountText = productDiscountField.getText().trim();
+            if (!discountText.isEmpty()) {
+                discountOverride = Double.parseDouble(discountText);
+                if (discountOverride < 0 || discountOverride > 100)
+                    throw new IllegalArgumentException("Discount must be between 0 and 100.");
+            }
+
+            adminService.addProductToCampaign(selected.getId(), product.getId(), discountOverride);
 
             // Check for overlapping campaign conflicts
             List<String> conflicts = adminService.checkOverlappingCampaigns(
@@ -210,6 +222,7 @@ public class CampaignController {
                 messageLabel.setText("Product added to campaign.");
                 messageLabel.setStyle("-fx-text-fill: #27ae60;");
             }
+            productDiscountField.clear();
             loadCampaignProducts(selected);
         } catch (Exception e) {
             messageLabel.setText("Error: " + e.getMessage());

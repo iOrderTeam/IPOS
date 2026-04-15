@@ -107,8 +107,8 @@ public class AdminService {
         campaignProductRepository.save(cp);
     }
 
-    // Add a product to a campaign
-    public CampaignProduct addProductToCampaign(Long campaignId, Long productId) {
+    // Add a product to a campaign with an optional per-product discount override
+    public CampaignProduct addProductToCampaign(Long campaignId, Long productId, Double discountOverride) {
         Campaign campaign = campaignRepository.findById(campaignId)
                 .orElseThrow(() -> new IllegalArgumentException("Campaign not found."));
         Product product = productRepository.findById(productId)
@@ -122,6 +122,7 @@ public class AdminService {
         cp.setCampaign(campaign);
         cp.setProduct(product);
         cp.setHits(0);
+        cp.setDiscountOverride(discountOverride);
         return campaignProductRepository.save(cp);
     }
 

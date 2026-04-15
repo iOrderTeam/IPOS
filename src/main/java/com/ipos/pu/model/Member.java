@@ -33,10 +33,16 @@ public class Member {
     private int orderCounter;
 
     // Commercial members only - null for non-commercial
+    private String companyName;
     private String companyRegistrationNumber;
     private String directorDetails;
     private String businessType;
     private String address;
+
+    private Long saApplicationId;
+
+    public Long getSaApplicationId() { return saApplicationId; }
+    public void setSaApplicationId(Long saApplicationId) { this.saApplicationId = saApplicationId; }
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -64,6 +70,9 @@ public class Member {
 
     public int getOrderCounter() { return orderCounter; }
     public void setOrderCounter(int orderCounter) { this.orderCounter = orderCounter; }
+
+    public String getCompanyName() { return companyName; }
+    public void setCompanyName(String companyName) { this.companyName = companyName; }
 
     public String getCompanyRegistrationNumber() { return companyRegistrationNumber; }
     public void setCompanyRegistrationNumber(String companyRegistrationNumber) { this.companyRegistrationNumber = companyRegistrationNumber; }
