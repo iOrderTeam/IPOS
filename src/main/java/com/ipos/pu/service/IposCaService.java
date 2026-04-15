@@ -7,6 +7,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,30 +55,51 @@ public class IposCaService {
         }
     }
 
-    // GET /stock — fetches current stock quantities from CA for all 5 CA-mapped products
-    // returns a map of caItemId -> quantity
-    // returns empty map if CA is offline so the catalogue still loads
-    public Map<Integer, Integer> fetchStockLevels() {
-        Map<Integer, Integer> result = new LinkedHashMap<>();
+    // GET /stock — fetches current stock details (id, name, quantity, price) from CA
+    // returns empty list if CA is offline so the catalogue still loads
+    @SuppressWarnings("unchecked")
+    public List<Map<String, Object>> fetchStockDetails() {
         try {
             RestTemplate rt = new RestTemplate();
-            List<?> items = rt.getForObject(CA_BASE + "/stock", List.class);
-            if (items == null) return result;
-
-            for (Object obj : items) {
-                if (obj instanceof Map<?, ?> m) {
-                    Object idObj  = m.get("itemId");
-                    Object qtyObj = m.get("quantity");
-                    if (idObj != null && qtyObj != null) {
-                        result.put(((Number) idObj).intValue(), ((Number) qtyObj).intValue());
-                    }
-                }
+            List<?> raw = rt.getForObject(CA_BASE + "/stock", List.class);
+            if (raw == null) return Collections.emptyList();
+            List<Map<String, Object>> result = new ArrayList<>();
+            for (Object obj : raw) {
+                if (obj instanceof Map<?, ?> m) result.add((Map<String, Object>) m);
             }
-            System.out.println("[PU->CA] Fetched stock levels for " + result.size() + " items");
-
+            System.out.println("[PU->CA] Fetched stock details for " + result.size() + " items");
+            return result;
         } catch (Exception e) {
             System.err.println("[PU->CA] /stock fetch failed (non-fatal): " + e.getMessage());
+            return Collections.emptyList();
         }
-        return result;
+    }
+
+    // DELETE /stock/{caItemId} — called when CA deletes a stock item
+    // non-fatal: if CA is offline PU catalogue is unaffected until next sync
+    public void notifyProductDeleted(Integer caItemId) {
+        try {
+            RestTemplate rt = new RestTemplate();
+            rt.delete(CA_BASE + "/stock/" + caItemId);
+            System.out.println("[CA->PU] Product deletion notified for caItemId=" + caItemId);
+        } catch (Exception e) {
+            System.err.println("[CA->PU] /stock delete notify failed (non-fatal): " + e.getMessage());
+        }
+    }
+
+    // POST /stock/sync — called when CA adds or edits a stock item
+    // non-fatal: if PU is offline the catalogue drifts until next refreshStockFromCa()
+    public void notifyStockUpdated(Integer caItemId, String name, double price) {
+        try {
+            RestTemplate rt = new RestTemplate();
+            Map<String, Object> payload = new LinkedHashMap<>();
+            payload.put("caItemId", caItemId);
+            payload.put("name",     name);
+            payload.put("price",    price);
+            rt.postForObject(CA_BASE + "/stock/sync", payload, String.class);
+            System.out.println("[CA->PU] Stock sync notified for caItemId=" + caItemId);
+        } catch (Exception e) {
+            System.err.println("[CA->PU] /stock sync notify failed (non-fatal): " + e.getMessage());
+        }
     }
 }
