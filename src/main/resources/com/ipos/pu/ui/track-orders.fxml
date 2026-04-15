@@ -62,6 +62,10 @@
               style="-fx-background-color: #ffffff; -fx-padding: 16 24; -fx-border-color: transparent transparent #e0e0e8 transparent; -fx-border-width: 1;">
             <Label text="My Orders" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #1e1e2e;"/>
             <Region HBox.hgrow="ALWAYS"/>
+            <Button fx:id="refreshButton" text="Refresh" onAction="#onRefreshClicked"
+                    style="-fx-background-color: #3b3b6e; -fx-text-fill: #ffffff; -fx-font-size: 12px; -fx-padding: 6 14; -fx-background-radius: 6; -fx-cursor: hand; -fx-graphic-text-gap: 6;">
+                <graphic><FontIcon iconLiteral="fth-refresh-cw" iconSize="13" iconColor="#ffffff"/></graphic>
+            </Button>
             <FontIcon iconLiteral="fth-user" iconSize="14" iconColor="#666"/>
             <Label fx:id="welcomeLabel" style="-fx-font-size: 13px; -fx-text-fill: #666;"/>
         </HBox>

@@ -31,6 +31,7 @@ public class TrackOrdersController {
     @FXML private Button cartNavButton;
     @FXML private Button campaignsNavBtn;
     @FXML private Button reportsNavBtn;
+    @FXML private Button refreshButton;
 
     @FXML private TableView<OrderItem> itemsTable;
     @FXML private TableColumn<OrderItem, String> colItemProduct;
@@ -94,6 +95,15 @@ public class TrackOrdersController {
             campaignsNavBtn.setVisible(false); campaignsNavBtn.setManaged(false);
             reportsNavBtn.setVisible(false); reportsNavBtn.setManaged(false);
         }
+    }
+
+    @FXML
+    private void onRefreshClicked() {
+        Long memberId = SessionManager.getCurrentMember().getId();
+        List<Order> orders = orderService.getOrdersForMember(memberId);
+        ordersTable.setItems(FXCollections.observableArrayList(orders));
+        itemsTable.setItems(FXCollections.emptyObservableList());
+        orderDetailLabel.setText("Select an order above to view its items.");
     }
 
     @FXML
